@@ -200,14 +200,30 @@
                 try {
                     loadingIndicator.style.display = 'block';
                     const response = await fetch(`${SCRIPT_URL}?action=getHorarios`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Erro HTTP: ${response.status}`);
+                    }
+                    
                     const data = await response.json();
                     loadingIndicator.style.display = 'none';
                     return data;
                 } catch (error) {
                     console.error('Erro ao carregar horários:', error);
                     loadingIndicator.style.display = 'none';
+                    showError('Erro ao carregar horários. Recarregue a página.');
                     return {};
                 }
+            }
+            
+            // Mostrar mensagem de erro
+            function showError(message) {
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = message || 'Ocorreu um erro. Tente novamente.';
+                errorDiv.style.display = 'block';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 5000);
             }
             
             // Atualizar os horários disponíveis quando a turma é selecionada
@@ -223,45 +239,51 @@
                 horarioSelect.disabled = true;
                 horarioSelect.innerHTML = '<option value="">Carregando horários...</option>';
                 
-                const [todasTurmas, horariosOcupados] = await Promise.all([
-                    gerarTodosHorarios(),
-                    carregarHorariosOcupados()
-                ]);
-                
-                // Limpar select de horários
-                horarioSelect.innerHTML = '';
-                
-                // Obter horários ocupados para a turma selecionada
-                const ocupadosParaTurma = horariosOcupados[turmaSelecionada] || [];
-                
-                // Adicionar apenas horários disponíveis
-                todasTurmas.forEach(horario => {
-                    if (!ocupadosParaTurma.includes(horario)) {
+                try {
+                    const [todasTurmas, horariosOcupados] = await Promise.all([
+                        gerarTodosHorarios(),
+                        carregarHorariosOcupados()
+                    ]);
+                    
+                    // Limpar select de horários
+                    horarioSelect.innerHTML = '';
+                    
+                    // Obter horários ocupados para a turma selecionada
+                    const ocupadosParaTurma = horariosOcupados[turmaSelecionada] || [];
+                    
+                    // Adicionar apenas horários disponíveis
+                    todasTurmas.forEach(horario => {
+                        if (!ocupadosParaTurma.includes(horario)) {
+                            const option = document.createElement('option');
+                            option.value = horario;
+                            option.textContent = horario;
+                            horarioSelect.appendChild(option);
+                        }
+                    });
+                    
+                    if (horarioSelect.options.length === 0) {
                         const option = document.createElement('option');
-                        option.value = horario;
-                        option.textContent = horario;
+                        option.value = '';
+                        option.textContent = 'Nenhum horário disponível para esta turma';
+                        option.disabled = true;
                         horarioSelect.appendChild(option);
+                        submitButton.disabled = true;
+                    } else {
+                        const defaultOption = document.createElement('option');
+                        defaultOption.value = '';
+                        defaultOption.textContent = 'Selecione um horário...';
+                        defaultOption.disabled = true;
+                        defaultOption.selected = true;
+                        horarioSelect.insertBefore(defaultOption, horarioSelect.firstChild);
+                        submitButton.disabled = false;
                     }
-                });
-                
-                if (horarioSelect.options.length === 0) {
-                    const option = document.createElement('option');
-                    option.value = '';
-                    option.textContent = 'Nenhum horário disponível para esta turma';
-                    option.disabled = true;
-                    horarioSelect.appendChild(option);
-                    submitButton.disabled = true;
-                } else {
-                    const defaultOption = document.createElement('option');
-                    defaultOption.value = '';
-                    defaultOption.textContent = 'Selecione um horário...';
-                    defaultOption.disabled = true;
-                    defaultOption.selected = true;
-                    horarioSelect.insertBefore(defaultOption, horarioSelect.firstChild);
-                    submitButton.disabled = false;
+                    
+                    horarioSelect.disabled = false;
+                } catch (error) {
+                    console.error('Erro ao atualizar horários:', error);
+                    showError('Erro ao carregar horários disponíveis');
+                    horarioSelect.innerHTML = '<option value="">Erro ao carregar</option>';
                 }
-                
-                horarioSelect.disabled = false;
             }
             
             // Event listener para mudança de turma
@@ -272,12 +294,18 @@
                 e.preventDefault();
                 
                 const formData = {
-                    responsavel: document.getElementById('responsavel').value,
-                    aluno: document.getElementById('aluno').value,
+                    responsavel: document.getElementById('responsavel').value.trim(),
+                    aluno: document.getElementById('aluno').value.trim(),
                     turma: document.getElementById('turma').value,
                     horario: document.getElementById('horario').value,
                     data: new Date().toLocaleString('pt-BR')
                 };
+                
+                // Validação básica
+                if (!formData.responsavel || !formData.aluno || !formData.turma || !formData.horario) {
+                    showError('Preencha todos os campos obrigatórios');
+                    return;
+                }
                 
                 submitButton.disabled = true;
                 submitButton.textContent = 'Enviando...';
@@ -291,8 +319,12 @@
                         body: JSON.stringify(formData)
                     });
                     
-                    if (!response.ok) throw new Error('Erro na resposta');
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.message || 'Erro no servidor');
+                    }
                     
+                    // Sucesso
                     document.getElementById('successMessage').style.display = 'block';
                     document.getElementById('errorMessage').style.display = 'none';
                     document.getElementById('agendamentoForm').reset();
@@ -304,13 +336,8 @@
                     // Atualizar horários disponíveis após agendamento
                     await atualizarHorariosDisponiveis();
                 } catch (error) {
-                    console.error('Erro:', error);
-                    document.getElementById('errorMessage').style.display = 'block';
-                    document.getElementById('successMessage').style.display = 'none';
-                    
-                    setTimeout(() => {
-                        document.getElementById('errorMessage').style.display = 'none';
-                    }, 5000);
+                    console.error('Erro no agendamento:', error);
+                    showError(error.message || 'Erro ao enviar agendamento');
                 } finally {
                     submitButton.disabled = false;
                     submitButton.textContent = 'Agendar';

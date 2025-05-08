@@ -42,8 +42,7 @@
         <option value="1º ano MB - Leticia da Silva Pinheiro">1º ano MB - Leticia da Silva Pinheiro</option>
         <option value="1º ano TA - Eliane Silva dos Santos Cruz">1º ano TA - Eliane Silva dos Santos Cruz</option>
         <option value="1º ano TB - Leticia da Silva Pinheiro">1º ano TB - Leticia da Silva Pinheiro</option>
-        <option value="1º ano TC - Nadir de Barros">1º ano TC - Nadir de Barros</option>>
-        <!-- (demais opções aqui...) -->
+        <option value="1º ano TC - Nadir de Barros">1º ano TC - Nadir de Barros</option>
       </select>
 
       <label for="data">Data da Reunião:</label>
@@ -71,7 +70,7 @@
         .then(data => {
           mensagem.textContent = data;
           form.reset();
-          carregarHorarios(); // <- recarrega os horários após o envio
+          carregarHorarios(); // Recarrega os horários após o envio
         })
         .catch(error => {
           mensagem.textContent = "Erro ao enviar agendamento.";
@@ -97,15 +96,12 @@
 
         select.innerHTML = '<option value="">Selecione o horário</option>';
         horariosPossiveis.forEach(horario => {
-          const option = document.createElement('option');
-          if (agendados.includes(horario)) {
-            option.textContent = horario + " (indisponível)";
-            option.disabled = true;
-          } else {
+          if (!agendados.includes(horario)) {
+            const option = document.createElement('option');
             option.value = horario;
             option.textContent = horario;
+            select.appendChild(option);
           }
-          select.appendChild(option);
         });
       } catch (err) {
         select.innerHTML = '<option>Erro ao carregar horários</option>';

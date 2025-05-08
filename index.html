@@ -94,13 +94,26 @@
         <button type="submit">Agendar Reunião</button>
     </form>
 
-    <script src="https://apis.google.com/js/api.js"></script>
     <script>
         // Função para enviar os dados para o Google Planilhas via Google Apps Script
         function sendToGoogleSheets(data) {
-            google.script.run.withSuccessHandler(function(response) {
+            const url = 'COLE_AQUI_A_URL_DO_SEU_APP_SCRIPT'; // Substitua pela URL do seu aplicativo da web
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(responseData => {
                 alert('Reunião agendada com sucesso!');
-            }).agendarReuniao(data);
+            })
+            .catch(error => {
+                console.error('Erro ao agendar a reunião:', error);
+                alert('Houve um erro ao agendar a reunião. Tente novamente.');
+            });
         }
 
         document.getElementById('agendamentoForm').addEventListener('submit', function(event) {
@@ -110,7 +123,7 @@
             const aluno = document.getElementById('aluno').value;
             const turma = document.getElementById('turma').value;
             const horario = document.getElementById('horario').value;
-            
+
             const data = {
                 responsavel: responsavel,
                 aluno: aluno,

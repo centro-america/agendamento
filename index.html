@@ -160,42 +160,28 @@
     </div>
 
     <script>
-        // URL do seu Google Apps Script (substitua pelo seu)
-        const SCRIPT_URL = 'SUA_URL_DO_APPS_SCRIPT_AQUI';
-        
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwylTM1g_Wnjmo70JDcPaykF3Yn-_YPcOFmw4XXZ0GaayU5fhVJyrXvhCntrFxueqaHpA/exec';
+
         document.addEventListener('DOMContentLoaded', function() {
             const turmaSelect = document.getElementById('turma');
             const horarioSelect = document.getElementById('horario');
             const loadingIndicator = document.getElementById('loadingIndicator');
             const submitButton = document.getElementById('submitButton');
-            
-            // Gerar todos os horários possíveis
+
             function gerarTodosHorarios() {
                 const horarios = [];
-                const startHour = 7;
-                const startMinute = 10;
-                const endHour = 10;
-                const endMinute = 50;
-                
-                let currentHour = startHour;
-                let currentMinute = startMinute;
-                
-                while (currentHour < endHour || (currentHour === endHour && currentMinute <= endMinute)) {
-                    const horaFormatada = currentHour.toString().padStart(2, '0');
-                    const minutoFormatado = currentMinute.toString().padStart(2, '0');
-                    horarios.push(`${horaFormatada}:${minutoFormatado}`);
-                    
-                    currentMinute += 10;
-                    if (currentMinute >= 60) {
-                        currentMinute -= 60;
-                        currentHour += 1;
+                let hora = 7, minuto = 10;
+                while (hora < 11) {
+                    horarios.push(`${hora.toString().padStart(2, '0')}:${minuto.toString().padStart(2, '0')}`);
+                    minuto += 10;
+                    if (minuto >= 60) {
+                        minuto = 0;
+                        hora++;
                     }
                 }
-                
                 return horarios;
             }
-            
-            // Carregar horários ocupados da planilha
+
             async function carregarHorariosOcupados() {
                 try {
                     loadingIndicator.style.display = 'block';
@@ -209,8 +195,7 @@
                     return {};
                 }
             }
-            
-            // Atualizar os horários disponíveis quando a turma é selecionada
+
             async function atualizarHorariosDisponiveis() {
                 const turmaSelecionada = turmaSelect.value;
                 if (!turmaSelecionada) {
@@ -218,59 +203,53 @@
                     horarioSelect.disabled = true;
                     return;
                 }
-                
+
                 submitButton.disabled = true;
                 horarioSelect.disabled = true;
                 horarioSelect.innerHTML = '<option value="">Carregando horários...</option>';
-                
-                const [todasTurmas, horariosOcupados] = await Promise.all([
+
+                const [todosHorarios, horariosOcupados] = await Promise.all([
                     gerarTodosHorarios(),
                     carregarHorariosOcupados()
                 ]);
-                
-                // Limpar select de horários
+
                 horarioSelect.innerHTML = '';
-                
-                // Obter horários ocupados para a turma selecionada
-                const ocupadosParaTurma = horariosOcupados[turmaSelecionada] || [];
-                
-                // Adicionar apenas horários disponíveis
-                todasTurmas.forEach(horario => {
-                    if (!ocupadosParaTurma.includes(horario)) {
-                        const option = document.createElement('option');
-                        option.value = horario;
-                        option.textContent = horario;
-                        horarioSelect.appendChild(option);
+                const ocupados = horariosOcupados[turmaSelecionada] || [];
+
+                todosHorarios.forEach(horario => {
+                    if (!ocupados.includes(horario)) {
+                        const opt = document.createElement('option');
+                        opt.value = horario;
+                        opt.textContent = horario;
+                        horarioSelect.appendChild(opt);
                     }
                 });
-                
+
                 if (horarioSelect.options.length === 0) {
-                    const option = document.createElement('option');
-                    option.value = '';
-                    option.textContent = 'Nenhum horário disponível para esta turma';
-                    option.disabled = true;
-                    horarioSelect.appendChild(option);
+                    const opt = document.createElement('option');
+                    opt.value = '';
+                    opt.textContent = 'Nenhum horário disponível para esta turma';
+                    opt.disabled = true;
+                    horarioSelect.appendChild(opt);
                     submitButton.disabled = true;
                 } else {
-                    const defaultOption = document.createElement('option');
-                    defaultOption.value = '';
-                    defaultOption.textContent = 'Selecione um horário...';
-                    defaultOption.disabled = true;
-                    defaultOption.selected = true;
-                    horarioSelect.insertBefore(defaultOption, horarioSelect.firstChild);
+                    const opt = document.createElement('option');
+                    opt.value = '';
+                    opt.textContent = 'Selecione um horário...';
+                    opt.disabled = true;
+                    opt.selected = true;
+                    horarioSelect.insertBefore(opt, horarioSelect.firstChild);
                     submitButton.disabled = false;
                 }
-                
+
                 horarioSelect.disabled = false;
             }
-            
-            // Event listener para mudança de turma
+
             turmaSelect.addEventListener('change', atualizarHorariosDisponiveis);
-            
-            // Configurar o envio do formulário
+
             document.getElementById('agendamentoForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
-                
+
                 const formData = {
                     responsavel: document.getElementById('responsavel').value,
                     aluno: document.getElementById('aluno').value,
@@ -278,36 +257,32 @@
                     horario: document.getElementById('horario').value,
                     data: new Date().toLocaleString('pt-BR')
                 };
-                
+
                 submitButton.disabled = true;
                 submitButton.textContent = 'Enviando...';
-                
+
                 try {
                     const response = await fetch(SCRIPT_URL, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(formData)
+                        body: new URLSearchParams(formData)
                     });
-                    
+
                     if (!response.ok) throw new Error('Erro na resposta');
-                    
+
                     document.getElementById('successMessage').style.display = 'block';
                     document.getElementById('errorMessage').style.display = 'none';
                     document.getElementById('agendamentoForm').reset();
-                    
+
                     setTimeout(() => {
                         document.getElementById('successMessage').style.display = 'none';
                     }, 5000);
-                    
-                    // Atualizar horários disponíveis após agendamento
+
                     await atualizarHorariosDisponiveis();
                 } catch (error) {
                     console.error('Erro:', error);
                     document.getElementById('errorMessage').style.display = 'block';
                     document.getElementById('successMessage').style.display = 'none';
-                    
+
                     setTimeout(() => {
                         document.getElementById('errorMessage').style.display = 'none';
                     }, 5000);

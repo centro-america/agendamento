@@ -1,0 +1,133 @@
+function doGet(e) {
+  const action = e.parameter.action;
+  
+  if (action === 'getHorarios') {
+    return getHorariosOcupados();
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({status: 'error', message: 'Ação não reconhecida'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    const jsonData = JSON.parse(e.postData.contents);
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Agendamentos');
+    
+    // Verificar se o horário ainda está disponível
+    if (!verificarDisponibilidade(jsonData.turma, jsonData.horario)) {
+      return ContentService.createTextOutput(JSON.stringify({
+        status: 'error',
+        message: 'Este horário já foi reservado por outra pessoa'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    sheet.appendRow([
+      new Date(),
+      jsonData.responsavel,
+      jsonData.aluno,
+      jsonData.turma,
+      jsonData.horario,
+      jsonData.data
+    ]);
+    
+    // Enviar e-mail de confirmação (opcional)
+    enviarEmailConfirmacao(jsonData);
+    
+    return ContentService.createTextOutput(JSON.stringify({status: 'success'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'error',
+      message: error.message
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function getHorariosOcupados() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Agendamentos');
+  const data = sheet.getDataRange().getValues();
+  
+  // Ignora o cabeçalho
+  data.shift();
+  
+  const horariosOcupados = {};
+  
+  data.forEach(row => {
+    const turma = row[3]; // Coluna D - Turma
+    const horario = row[4]; // Coluna E - Horário
+    
+    if (!horariosOcupados[turma]) {
+      horariosOcupados[turma] = [];
+    }
+    
+    if (horario && !horariosOcupados[turma].includes(horario)) {
+      horariosOcupados[turma].push(horario);
+    }
+  });
+  
+  return ContentService.createTextOutput(JSON.stringify(horariosOcupados))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function verificarDisponibilidade(turma, horario) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Agendamentos');
+  const data = sheet.getDataRange().getValues();
+  
+  // Ignora o cabeçalho
+  data.shift();
+  
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][3] === turma && data[i][4] === horario) {
+      return false; // Já existe um agendamento para esta turma/horário
+    }
+  }
+  
+  return true;
+}
+
+function enviarEmailConfirmacao(dados) {
+  try {
+    const emailTemplate = `
+      <h2>Confirmação de Agendamento</h2>
+      <p>Seu agendamento para a reunião de pais e professores foi confirmado:</p>
+      <ul>
+        <li><strong>Responsável:</strong> ${dados.responsavel}</li>
+        <li><strong>Aluno:</strong> ${dados.aluno}</li>
+        <li><strong>Turma:</strong> ${dados.turma}</li>
+        <li><strong>Horário:</strong> ${dados.horario}</li>
+        <li><strong>Data do agendamento:</strong> ${dados.data}</li>
+      </ul>
+      <p>Atenciosamente,<br>Equipe Escolar</p>
+    `;
+    
+    MailApp.sendEmail({
+      to: Session.getActiveUser().getEmail(), // Substitua pelo e-mail do responsável se possível
+      subject: `Confirmação de Agendamento - ${dados.aluno}`,
+      htmlBody: emailTemplate
+    });
+  } catch (error) {
+    console.error('Erro ao enviar e-mail:', error);
+  }
+}
+
+function criarPlanilhaSeNecessario() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('Agendamentos');
+  
+  if (!sheet) {
+    sheet = ss.insertSheet('Agendamentos');
+    sheet.appendRow([
+      'Timestamp',
+      'Responsável',
+      'Aluno',
+      'Turma',
+      'Horário',
+      'Data do Agendamento'
+    ]);
+    
+    // Congelar cabeçalho e formatar
+    sheet.setFrozenRows(1);
+    sheet.getRange('A1:F1').setBackground('#1a73e8').setFontColor('white').setFontWeight('bold');
+  }
+}

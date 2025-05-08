@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento - Reunião de Pais e Professores</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f9ff;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 255, 0.1);
+        }
+        
+        h1 {
+            color: #1a73e8;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #1a73e8;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        input:focus, select:focus {
+            border-color: #1a73e8;
+            outline: none;
+            box-shadow: 0 0 5px rgba(26, 115, 232, 0.3);
+        }
+        
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #0d5bba;
+        }
+        
+        .success-message {
+            display: none;
+            background-color: #e6f4ea;
+            color: #188038;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .error-message {
+            display: none;
+            background-color: #fce8e6;
+            color: #d93025;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Agendamento de Reunião</h1>
+        
+        <form id="agendamentoForm">
+            <div class="form-group">
+                <label for="responsavel">Nome do Responsável:</label>
+                <input type="text" id="responsavel" name="responsavel" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="aluno">Nome do Aluno:</label>
+                <input type="text" id="aluno" name="aluno" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="turma">Turma:</label>
+                <select id="turma" name="turma" required>
+                    <option value="">Selecione uma turma...</option>
+                    <option value="Maternal MA - Marilene Soares da Silva Rosa">Maternal MA - Marilene Soares da Silva Rosa</option>
+                    <option value="Maternal TA - Tatiane Maria Souza da Costa">Maternal TA - Tatiane Maria Souza da Costa</option>
+                    <option value="Pré 1 MA - Ana Paula">Pré 1 MA - Ana Paula</option>
+                    <option value="Pré 1 TA - Ana Paula">Pré 1 TA - Ana Paula</option>
+                    <option value="Pré 1 TB - Rosane Ambrósio de Oliveira dos Santos">Pré 1 TB - Rosane Ambrósio de Oliveira dos Santos</option>
+                    <option value="Pré 2 MA - Maria Letícia Sousa de Araújo">Pré 2 MA - Maria Letícia Sousa de Araújo</option>
+                    <option value="Pré 2 TA - Maria Letícia Sousa de Araújo">Pré 2 TA - Maria Letícia Sousa de Araújo</option>
+                    <option value="Pré 2 TB - Valéria Pereira Belisario de Paula">Pré 2 TB - Valéria Pereira Belisario de Paula</option>
+                    <option value="Pré 3 MA - Raissa Manoele Costa Pereira">Pré 3 MA - Raissa Manoele Costa Pereira</option>
+                    <option value="Pré 3 MB - Valéria Pereira Belisario de Paula">Pré 3 MB - Valéria Pereira Belisario de Paula</option>
+                    <option value="Pré 3 TA - Heulla Fhernanda Menezes">Pré 3 TA - Heulla Fhernanda Menezes</option>
+                    <option value="Pré 3 TB - Raissa Manoele Costa Pereira">Pré 3 TB - Raissa Manoele Costa Pereira</option>
+                    <option value="1º ano MA - Eliane Silva dos Santos Cruz">1º ano MA - Eliane Silva dos Santos Cruz</option>
+                    <option value="1º ano MB - Leticia da Silva Pinheiro">1º ano MB - Leticia da Silva Pinheiro</option>
+                    <option value="1º ano TA - Eliane Silva dos Santos Cruz">1º ano TA - Eliane Silva dos Santos Cruz</option>
+                    <option value="1º ano TB - Leticia da Silva Pinheiro">1º ano TB - Leticia da Silva Pinheiro</option>
+                    <option value="1º ano TC - Nadir de Barros">1º ano TC - Nadir de Barros</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="horario">Horário:</label>
+                <select id="horario" name="horario" required disabled>
+                    <option value="">Primeiro selecione uma turma</option>
+                </select>
+            </div>
+            
+            <div class="loading" id="loadingIndicator">
+                Carregando horários disponíveis...
+            </div>
+            
+            <button type="submit" id="submitButton">Agendar</button>
+        </form>
+        
+        <div id="successMessage" class="success-message">
+            Agendamento realizado com sucesso! Um e-mail de confirmação foi enviado.
+        </div>
+        
+        <div id="errorMessage" class="error-message">
+            Ocorreu um erro ao processar seu agendamento. Por favor, tente novamente.
+        </div>
+    </div>
+
+    <script>
+        // URL do seu Google Apps Script (substitua pelo seu)
+        const SCRIPT_URL = 'SUA_URL_DO_APPS_SCRIPT_AQUI';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const turmaSelect = document.getElementById('turma');
+            const horarioSelect = document.getElementById('horario');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const submitButton = document.getElementById('submitButton');
+            
+            // Gerar todos os horários possíveis
+            function gerarTodosHorarios() {
+                const horarios = [];
+                const startHour = 7;
+                const startMinute = 10;
+                const endHour = 10;
+                const endMinute = 50;
+                
+                let currentHour = startHour;
+                let currentMinute = startMinute;
+                
+                while (currentHour < endHour || (currentHour === endHour && currentMinute <= endMinute)) {
+                    const horaFormatada = currentHour.toString().padStart(2, '0');
+                    const minutoFormatado = currentMinute.toString().padStart(2, '0');
+                    horarios.push(`${horaFormatada}:${minutoFormatado}`);
+                    
+                    currentMinute += 10;
+                    if (currentMinute >= 60) {
+                        currentMinute -= 60;
+                        currentHour += 1;
+                    }
+                }
+                
+                return horarios;
+            }
+            
+            // Carregar horários ocupados da planilha
+            async function carregarHorariosOcupados() {
+                try {
+                    loadingIndicator.style.display = 'block';
+                    const response = await fetch(`${SCRIPT_URL}?action=getHorarios`);
+                    const data = await response.json();
+                    loadingIndicator.style.display = 'none';
+                    return data;
+                } catch (error) {
+                    console.error('Erro ao carregar horários:', error);
+                    loadingIndicator.style.display = 'none';
+                    return {};
+                }
+            }
+            
+            // Atualizar os horários disponíveis quando a turma é selecionada
+            async function atualizarHorariosDisponiveis() {
+                const turmaSelecionada = turmaSelect.value;
+                if (!turmaSelecionada) {
+                    horarioSelect.innerHTML = '<option value="">Primeiro selecione uma turma</option>';
+                    horarioSelect.disabled = true;
+                    return;
+                }
+                
+                submitButton.disabled = true;
+                horarioSelect.disabled = true;
+                horarioSelect.innerHTML = '<option value="">Carregando horários...</option>';
+                
+                const [todasTurmas, horariosOcupados] = await Promise.all([
+                    gerarTodosHorarios(),
+                    carregarHorariosOcupados()
+                ]);
+                
+                // Limpar select de horários
+                horarioSelect.innerHTML = '';
+                
+                // Obter horários ocupados para a turma selecionada
+                const ocupadosParaTurma = horariosOcupados[turmaSelecionada] || [];
+                
+                // Adicionar apenas horários disponíveis
+                todasTurmas.forEach(horario => {
+                    if (!ocupadosParaTurma.includes(horario)) {
+                        const option = document.createElement('option');
+                        option.value = horario;
+                        option.textContent = horario;
+                        horarioSelect.appendChild(option);
+                    }
+                });
+                
+                if (horarioSelect.options.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'Nenhum horário disponível para esta turma';
+                    option.disabled = true;
+                    horarioSelect.appendChild(option);
+                    submitButton.disabled = true;
+                } else {
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = '';
+                    defaultOption.textContent = 'Selecione um horário...';
+                    defaultOption.disabled = true;
+                    defaultOption.selected = true;
+                    horarioSelect.insertBefore(defaultOption, horarioSelect.firstChild);
+                    submitButton.disabled = false;
+                }
+                
+                horarioSelect.disabled = false;
+            }
+            
+            // Event listener para mudança de turma
+            turmaSelect.addEventListener('change', atualizarHorariosDisponiveis);
+            
+            // Configurar o envio do formulário
+            document.getElementById('agendamentoForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    responsavel: document.getElementById('responsavel').value,
+                    aluno: document.getElementById('aluno').value,
+                    turma: document.getElementById('turma').value,
+                    horario: document.getElementById('horario').value,
+                    data: new Date().toLocaleString('pt-BR')
+                };
+                
+                submitButton.disabled = true;
+                submitButton.textContent = 'Enviando...';
+                
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    if (!response.ok) throw new Error('Erro na resposta');
+                    
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                    document.getElementById('agendamentoForm').reset();
+                    
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 5000);
+                    
+                    // Atualizar horários disponíveis após agendamento
+                    await atualizarHorariosDisponiveis();
+                } catch (error) {
+                    console.error('Erro:', error);
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('successMessage').style.display = 'none';
+                    
+                    setTimeout(() => {
+                        document.getElementById('errorMessage').style.display = 'none';
+                    }, 5000);
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Agendar';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

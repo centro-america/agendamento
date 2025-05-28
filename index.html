@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -14,33 +14,32 @@
     header {
       background-color: #0D47A1; /* Azul mais escuro */
       color: white;
-      padding: 40px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
+      padding: 35px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    header .header-container {
+    .header-left {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 15px;
     }
 
-    header .header-text h1 {
-      font-size: 28px;
+    .header-left img {
+      height: 55px;
+    }
+
+    .header-text h1 {
+      font-size: 26px;
       margin: 0;
     }
 
-    header .header-text p {
-      font-size: 18px;
-      margin: 5px 0 0 0;
-    }
-
-    header img {
-      height: 50px;
+    .header-text p {
+      font-size: 16px;
+      margin: 3px 0 0 0;
     }
 
     form {
@@ -48,24 +47,26 @@
       padding: 40px;
       border-radius: 10px;
       max-width: 700px;
-      margin: 180px auto 40px auto;
+      margin: 60px auto 40px auto;
       box-shadow: 0 0 12px rgba(0,0,0,0.1);
-      font-size: 18px; /* Fonte maior */
+      font-size: 18px;
     }
 
     h2 {
       text-align: center;
       margin-bottom: 25px;
-      font-size: 22px;
+      font-size: 20px;
     }
 
     .input-row {
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .input-row div {
-      flex: 1;
+      flex: 1 1 48%;
+      min-width: 200px;
     }
 
     label {
@@ -83,11 +84,15 @@
       font-size: 16px;
     }
 
+    #horario {
+      border: 2px solid #999; /* Mais espessa e visível */
+    }
+
     button {
       width: 200px;
       margin: 25px auto 0 auto;
       display: block;
-      background-color: #0D47A1; /* Azul mais escuro */
+      background-color: #0D47A1;
       color: white;
       border: none;
       font-size: 18px;
@@ -104,12 +109,12 @@
 <body>
 
   <header>
-    <div class="header-container">
+    <div class="header-left">
+      <img src="https://github.com/centro-america/agendamento/blob/main/logo-colegio.png?raw=true" alt="Logo">
       <div class="header-text">
         <h1>Colégio Adventista Centro América</h1>
         <p>Reunião de Pais - 28/05/2025</p>
       </div>
-      <img src="https://github.com/centro-america/agendamento/blob/main/logo-colegio.png?raw=true" alt="Logo">
     </div>
   </header>
 
@@ -247,5 +252,6 @@
       }
     });
   </script>
+
 </body>
 </html>

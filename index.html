@@ -1,111 +1,56 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Agendamento de Reunião</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f4f8; }
-    .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    h2 { text-align: center; }
-    input, select, button { width: 100%; margin: 8px 0; padding: 12px; border-radius: 5px; border: 1px solid #ccc; }
-    button { background: #4CAF50; color: white; border: none; cursor: pointer; }
-    button:hover { background: #45a049; }
-    #mensagem { margin-top: 10px; text-align: center; }
-    option.indisponivel { text-decoration: line-through; color: #aaa; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Agende Sua Reunião</h2>
-    <form id="formulario">
-      <label for="nome">Nome do Responsável:</label>
-      <input type="text" id="nome" name="nome" required>
+<!-- ... tudo igual até o script -->
+<script>
+  const form = document.getElementById('formulario');
+  const mensagem = document.getElementById('mensagem');
+  const scriptURL = "https://script.google.com/macros/s/SEU_SCRIPT_ID/exec";
 
-      <label for="aluno">Nome do Aluno:</label>
-      <input type="text" id="aluno" name="aluno" required>
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const formData = new FormData(form);
 
-      <label for="turma">Turma:</label>
-      <select id="turma" name="turma" required>
-        <option value="">Selecione a turma</option>
-        <!-- (opções mantidas) -->
-        <option value="1º ano TC - Nadir de Barros">1º ano TC - Nadir de Barros</option>
-      </select>
+    fetch(scriptURL, { method: 'POST', body: formData })
+      .then(response => response.text())
+      .then(data => {
+        mensagem.textContent = data;
+        form.reset();
+        carregarHorarios(); // Atualiza os horários após envio
+      })
+      .catch(error => {
+        mensagem.textContent = "Erro ao enviar agendamento.";
+        console.error('Erro:', error);
+      });
+  });
 
-      <label for="data">Data da Reunião:</label>
-      <input type="text" id="data" name="data" value="14/05/2025" readonly>
+  async function carregarHorarios() {
+    const select = document.getElementById('hora');
+    const dataSelecionada = document.getElementById('data').value;
+    select.innerHTML = '<option value="">Carregando horários...</option>';
 
-      <label for="hora">Horário preferido:</label>
-      <select id="hora" name="hora" required></select>
-
-      <button type="submit">Enviar Agendamento</button>
-    </form>
-    <div id="mensagem"></div>
-  </div>
-
-  <script>
-    const form = document.getElementById('formulario');
-    const mensagem = document.getElementById('mensagem');
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxDqszuYAOMPlatE8roRhm4AKcA5MGQaL3HLJZ8LLJjAQxii50ijrz0C_qkRR-b3gZIKA/exec";
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const formData = new FormData(form);
-
-      fetch(scriptURL, { method: 'POST', body: formData })
-        .then(response => response.text())
-        .then(data => {
-          mensagem.textContent = data;
-          form.reset();
-          carregarHorarios(); // Recarrega os horários após o envio
-        })
-        .catch(error => {
-          mensagem.textContent = "Erro ao enviar agendamento.";
-          console.error('Erro:', error);
-        });
-    });
-
-    async function carregarHorarios() {
-      const select = document.getElementById('hora');
-      const dataInput = document.getElementById('data');
-      const dataValor = dataInput.value; // "14/05/2025"
-      select.innerHTML = '<option value="">Carregando horários...</option>';
-
-      // Lista de horários possíveis de 07:10 até 10:50, de 10 em 10 min
-      const horariosPossiveis = [];
-      let h = 7, m = 10;
-      while (h < 11 || (h === 10 && m <= 50)) {
-        horariosPossiveis.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
-        m += 10;
-        if (m >= 60) { m = 0; h++; }
-      }
-
-      try {
-        const url = `${scriptURL}?data=${encodeURIComponent(dataValor)}`;
-        const res = await fetch(url);
-        const agendados = await res.json();
-
-        select.innerHTML = '<option value="">Selecione o horário</option>';
-        horariosPossiveis.forEach(horario => {
-          const option = document.createElement('option');
-          option.value = horario;
-
-          if (agendados.includes(horario)) {
-            option.textContent = `${horario} - Indisponível`;
-            option.disabled = true;
-            option.classList.add('indisponivel');
-          } else {
-            option.textContent = horario;
-          }
-
-          select.appendChild(option);
-        });
-      } catch (err) {
-        select.innerHTML = '<option>Erro ao carregar horários</option>';
-        console.error(err);
-      }
+    const horariosPossiveis = [];
+    let h = 7, m = 10;
+    while (h < 11 || (h === 10 && m <= 50)) {
+      horariosPossiveis.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+      m += 10;
+      if (m >= 60) { m = 0; h++; }
     }
 
-    window.onload = carregarHorarios;
-  </script>
-</body>
-</html>
+    try {
+      const res = await fetch(`${scriptURL}?data=${encodeURIComponent(dataSelecionada)}`);
+      const agendados = await res.json();
+
+      select.innerHTML = '<option value="">Selecione o horário</option>';
+      horariosPossiveis.forEach(horario => {
+        if (!agendados.includes(horario)) {
+          const option = document.createElement('option');
+          option.value = horario;
+          option.textContent = horario;
+          select.appendChild(option);
+        }
+      });
+    } catch (err) {
+      select.innerHTML = '<option>Erro ao carregar horários</option>';
+    }
+  }
+
+  window.onload = carregarHorarios;
+</script>

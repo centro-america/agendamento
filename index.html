@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -14,12 +14,8 @@
     header {
       background-color: #0D47A1; /* Azul mais escuro */
       color: white;
-      padding: 35px 20px; /* Cabeçalho mais grosso */
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      text-align: center;
-      position: left;
+      padding: 40px;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -27,21 +23,24 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    header h1 {
-      font-size: 24px;
+    header .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header .header-text h1 {
+      font-size: 28px;
       margin: 0;
     }
 
-    header p {
-      font-size: 16px;
-      margin-top: 5px;
+    header .header-text p {
+      font-size: 18px;
+      margin: 5px 0 0 0;
     }
 
     header img {
-      height: 40px;
-      position: absolute;
-      right: 20px;
-      top: 20px;
+      height: 50px;
     }
 
     form {
@@ -49,7 +48,7 @@
       padding: 40px;
       border-radius: 10px;
       max-width: 700px;
-      margin: 160px auto 40px auto;
+      margin: 180px auto 40px auto;
       box-shadow: 0 0 12px rgba(0,0,0,0.1);
       font-size: 18px; /* Fonte maior */
     }
@@ -57,7 +56,7 @@
     h2 {
       text-align: center;
       margin-bottom: 25px;
-      font-size: 20px;
+      font-size: 22px;
     }
 
     .input-row {
@@ -105,9 +104,13 @@
 <body>
 
   <header>
-    <h1>Colégio Adventista Centro América</h1>
-    <p>Reunião de Pais - 28/05/2025</p>
-    <img src="https://github.com/centro-america/agendamento/blob/main/logo-colegio.png?raw=true" alt="Logo">
+    <div class="header-container">
+      <div class="header-text">
+        <h1>Colégio Adventista Centro América</h1>
+        <p>Reunião de Pais - 28/05/2025</p>
+      </div>
+      <img src="https://github.com/centro-america/agendamento/blob/main/logo-colegio.png?raw=true" alt="Logo">
+    </div>
   </header>
 
   <form id="agendamento-form">

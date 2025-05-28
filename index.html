@@ -2,12 +2,11 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agendamento Escolar</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* Seu estilo aqui... */
     .gradient-bg {
       background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
     }
@@ -24,181 +23,89 @@
       transform: translateY(0);
     }
   </style>
-
-  <!-- Firebase App (necessário) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <!-- Firebase Firestore -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-  <!-- Firebase Analytics (opcional) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics-compat.js"></script>
-
-  <script>
-    // Sua configuração Firebase (do seu código)
-    const firebaseConfig = {
-      apiKey: "AIzaSyC_DISyXZJJlstDr-tJrL1hLmK3TCIxGIM",
-      authDomain: "agendamento-2ca09.firebaseapp.com",
-      projectId: "agendamento-2ca09",
-      storageBucket: "agendamento-2ca09.firebasestorage.app",
-      messagingSenderId: "592923353134",
-      appId: "1:592923353134:web:bf323f9f7be50f64077fbf",
-      measurementId: "G-2EVXN6H093"
-    };
-
-    // Inicializa Firebase
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
-
-    // Referência para Firestore
-    const db = firebase.firestore();
-  </script>
 </head>
 <body class="min-h-screen bg-gray-50">
   <div class="gradient-bg text-white py-6">
-    <div class="container mx-auto px-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <i class="fas fa-calendar-alt text-3xl"></i>
-          <h1 class="text-2xl md:text-3xl font-bold">Agendamento Escolar</h1>
-        </div>
-        <div class="hidden md:block">
-          <p class="text-blue-100"><i class="fas fa-clock mr-2"></i>Horários disponíveis de segunda a sexta</p>
-        </div>
+    <div class="container mx-auto px-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <i class="fas fa-calendar-alt text-3xl"></i>
+        <h1 class="text-2xl md:text-3xl font-bold">Agendamento Escolar</h1>
       </div>
     </div>
   </div>
 
   <div class="container mx-auto px-4 py-12">
-    <div class="max-w-2xl mx-auto">
-      <div class="bg-white rounded-xl form-shadow overflow-hidden">
-        <div class="p-6 md:p-8">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">Preencha os dados para agendamento</h2>
-
-          <form id="schedulingForm" class="space-y-6">
-            <div>
-              <label for="responsibleName" class="block text-sm font-medium text-gray-700 mb-1">Nome do Responsável</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="fas fa-user text-gray-400"></i>
-                </div>
-                <input type="text" id="responsibleName" name="responsibleName" required
-                  class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 border"
-                  placeholder="Digite seu nome completo" />
-              </div>
-            </div>
-
-            <div>
-              <label for="studentName" class="block text-sm font-medium text-gray-700 mb-1">Nome do Aluno</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="fas fa-child text-gray-400"></i>
-                </div>
-                <input type="text" id="studentName" name="studentName" required
-                  class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 border"
-                  placeholder="Digite o nome do aluno" />
-              </div>
-            </div>
-
-            <div>
-              <label for="classGroup" class="block text-sm font-medium text-gray-700 mb-1">Turma</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="fas fa-users text-gray-400"></i>
-                </div>
-                <select id="classGroup" name="classGroup" required
-                  class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 border bg-white">
-                  <option value="" disabled selected>Selecione a turma</option>
-                  <option value="Turma A - Manhã">Turma A - Manhã</option>
-                  <option value="Turma B - Manhã">Turma B - Manhã</option>
-                  <option value="Turma C - Tarde">Turma C - Tarde</option>
-                  <option value="Turma D - Tarde">Turma D - Tarde</option>
-                  <option value="Turma E - Integral">Turma E - Integral</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label for="scheduleTime" class="block text-sm font-medium text-gray-700 mb-1">Horário</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="fas fa-clock text-gray-400"></i>
-                </div>
-                <select id="scheduleTime" name="scheduleTime" required
-                  class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 border bg-white">
-                  <option value="" disabled selected>Selecione o horário</option>
-                  <option value="08:00 - 09:00">08:00 - 09:00</option>
-                  <option value="09:00 - 10:00">09:00 - 10:00</option>
-                  <option value="10:00 - 11:00">10:00 - 11:00</option>
-                  <option value="14:00 - 15:00">14:00 - 15:00</option>
-                  <option value="15:00 - 16:00">15:00 - 16:00</option>
-                  <option value="16:00 - 17:00">16:00 - 17:00</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="pt-2">
-              <button type="submit"
-                class="w-full gradient-bg text-white py-3 px-4 rounded-md hover:opacity-90 transition duration-300 flex items-center justify-center space-x-2">
-                <i class="fas fa-paper-plane"></i>
-                <span>Agendar Horário</span>
-              </button>
-            </div>
-          </form>
-
-          <div id="successMessage"
-            class="success-message mt-6 p-4 bg-green-50 border border-green-200 rounded-md text-green-700">
-            <div class="flex items-center">
-              <i class="fas fa-check-circle text-green-500 mr-2 text-xl"></i>
-              <div>
-                <h3 class="font-medium">Agendamento realizado com sucesso!</h3>
-                <p class="text-sm">Você receberá uma confirmação por e-mail em breve.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-8 bg-white rounded-xl p-6 form-shadow">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4"><i
-            class="fas fa-info-circle mr-2 text-blue-500"></i>Informações importantes</h3>
-        <ul class="space-y-3 text-gray-600">
-          <li class="flex items-start">
-            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-            <span>Chegar com 10 minutos de antecedência no horário marcado</span>
-          </li>
-          <li class="flex items-start">
-            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-            <span>Trazer documento de identificação do responsável</span>
-          </li>
-          <li class="flex items-start">
-            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-            <span>Em caso de cancelamento, entrar em contato com 24h de antecedência</span>
-          </li>
-        </ul>
+    <div class="max-w-2xl mx-auto bg-white rounded-xl form-shadow p-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Preencha os dados para agendamento</h2>
+      <form id="schedulingForm" class="space-y-6">
+        <input id="responsibleName" required placeholder="Nome do Responsável" class="w-full border rounded px-4 py-2" />
+        <input id="studentName" required placeholder="Nome do Aluno" class="w-full border rounded px-4 py-2" />
+        <select id="classGroup" required class="w-full border rounded px-4 py-2">
+          <option value="" disabled selected>Selecione a turma</option>
+          <option>Turma A - Manhã</option>
+          <option>Turma B - Manhã</option>
+          <option>Turma C - Tarde</option>
+          <option>Turma D - Tarde</option>
+          <option>Turma E - Integral</option>
+        </select>
+        <select id="scheduleTime" required class="w-full border rounded px-4 py-2">
+          <option value="" disabled selected>Selecione o horário</option>
+          <option>08:00 - 09:00</option>
+          <option>09:00 - 10:00</option>
+          <option>10:00 - 11:00</option>
+          <option>14:00 - 15:00</option>
+          <option>15:00 - 16:00</option>
+          <option>16:00 - 17:00</option>
+        </select>
+        <button type="submit" class="w-full gradient-bg text-white py-3 px-4 rounded hover:opacity-90 transition">Agendar</button>
+      </form>
+      <div id="successMessage" class="success-message mt-6 p-4 bg-green-50 border border-green-200 rounded text-green-700">
+        Agendamento realizado com sucesso!
       </div>
     </div>
   </div>
 
-  <footer class="bg-gray-800 text-white py-8">
-    <div class="container mx-auto px-4">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="mb-4 md:mb-0">
-          <h3 class="text-xl font-bold flex items-center">
-            <i class="fas fa-school mr-2"></i>
-            Colégio Adventista Centro América
-          </h3>
-          <p class="text-gray-400 mt-1">Rua das Flores, 123 - Centro</p>
-        </div>
-        <div class="flex space-x-4">
-          <a href="#" class="text-gray-400 hover:text-white transition">
-            <i class="fab fa-facebook-f text-xl"></i>
-          </a>
-          <a href="#" class="text-gray-400 hover:text-white transition">
-            <i class="fab fa-instagram text-xl"></i>
-          </a>
-          <a href="#" class="text-gray-400 hover:text-white transition">
-            <i class="fab fa-whatsapp text-xl"></i>
-          </a>
-        </div>
-      </div>
-      <div class="mt-6 pt-6 border-t border-gray-700 text-center text-gray-400 text-sm">
-        <p>© 2025 Colégio Adventista Centro América. Todos os direitos reservados
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
+      authDomain: "agendamento-c4753.firebaseapp.com",
+      projectId: "agendamento-c4753",
+      storageBucket: "agendamento-c4753.appspot.com",
+      messagingSenderId: "953838698372",
+      appId: "1:953838698372:web:f07ca99f1245c97c1ce7d1",
+      measurementId: "G-72V3RZG3MF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("schedulingForm");
+    const successMessage = document.getElementById("successMessage");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+        responsibleName: document.getElementById("responsibleName").value,
+        studentName: document.getElementById("studentName").value,
+        classGroup: document.getElementById("classGroup").value,
+        scheduleTime: document.getElementById("scheduleTime").value,
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        await addDoc(collection(db, "agendamentos"), data);
+        successMessage.classList.add("show");
+        form.reset();
+        setTimeout(() => successMessage.classList.remove("show"), 5000);
+      } catch (error) {
+        alert("Erro ao agendar: " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

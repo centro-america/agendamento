@@ -1,56 +1,56 @@
-<!-- ... tudo igual até o script -->
-<script>
-  const form = document.getElementById('formulario');
-  const mensagem = document.getElementById('mensagem');
-  const scriptURL = "https://script.google.com/macros/s/SEU_SCRIPT_ID/exec";
+function doPost(e) {
+  try {
+    const formData = e.parameter;
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const formData = new FormData(form);
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Agendamentos');
+    if (!sheet) throw new Error("A aba 'Agendamentos' não foi encontrada.");
 
-    fetch(scriptURL, { method: 'POST', body: formData })
-      .then(response => response.text())
-      .then(data => {
-        mensagem.textContent = data;
-        form.reset();
-        carregarHorarios(); // Atualiza os horários após envio
-      })
-      .catch(error => {
-        mensagem.textContent = "Erro ao enviar agendamento.";
-        console.error('Erro:', error);
-      });
-  });
+    sheet.appendRow([
+      new Date(),            // Timestamp
+      formData.nome,         // Nome do Responsável
+      formData.aluno,        // Nome do Aluno
+      formData.turma,        // Turma
+      formData.hora,         // ⚠️ Corrigido: Horário primeiro
+      formData.data          // ⚠️ Corrigido: Data por último
+    ]);
 
-  async function carregarHorarios() {
-    const select = document.getElementById('hora');
-    const dataSelecionada = document.getElementById('data').value;
-    select.innerHTML = '<option value="">Carregando horários...</option>';
+    return ContentService
+      .createTextOutput("Agendamento enviado com sucesso!")
+      .setMimeType(ContentService.MimeType.TEXT);
 
-    const horariosPossiveis = [];
-    let h = 7, m = 10;
-    while (h < 11 || (h === 10 && m <= 50)) {
-      horariosPossiveis.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
-      m += 10;
-      if (m >= 60) { m = 0; h++; }
-    }
-
-    try {
-      const res = await fetch(`${scriptURL}?data=${encodeURIComponent(dataSelecionada)}`);
-      const agendados = await res.json();
-
-      select.innerHTML = '<option value="">Selecione o horário</option>';
-      horariosPossiveis.forEach(horario => {
-        if (!agendados.includes(horario)) {
-          const option = document.createElement('option');
-          option.value = horario;
-          option.textContent = horario;
-          select.appendChild(option);
-        }
-      });
-    } catch (err) {
-      select.innerHTML = '<option>Erro ao carregar horários</option>';
-    }
+  } catch (error) {
+    return ContentService
+      .createTextOutput("Erro ao processar o agendamento.")
+      .setMimeType(ContentService.MimeType.TEXT);
   }
+}
 
-  window.onload = carregarHorarios;
-</script>
+function doGet(e) {
+  try {
+    const dataAlvo = e.parameter.data;
+    if (!dataAlvo) throw new Error("Parâmetro 'data' não fornecido.");
+
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Agendamentos');
+    if (!sheet) throw new Error("A aba 'Agendamentos' não foi encontrada.");
+
+    const dados = sheet.getDataRange().getValues();
+    const horariosOcupados = [];
+
+    for (let i = 1; i < dados.length; i++) {
+      const data = dados[i][5];     // Coluna "Data do Agendamento"
+      const horario = dados[i][4];  // Coluna "Horário"
+      if (data === dataAlvo) {
+        horariosOcupados.push(horario);
+      }
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify(horariosOcupados))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify([]))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}

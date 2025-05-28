@@ -1,99 +1,235 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Agendamento - Colégio Adventista Centro América</title>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <script type="module" src="firebase.js"></script>
-  <script defer src="script.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agendamento Escolar</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #2196F3;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 22px;
+      margin: 0;
+    }
+
+    header img {
+      height: 40px;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 100px auto 40px auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-row div {
+      flex: 1;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 180px;
+      margin: 20px auto 0 auto;
+      display: block;
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      font-size: 18px;
+      padding: 10px 0;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #1976D2;
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-gray-50">
-  <div class="bg-blue-700 text-white py-6 px-4">
-    <div class="container mx-auto max-w-4xl flex items-center justify-between">
+<body>
+
+  <header>
+    <h1>Colégio Adventista Centro América</h1>
+    <img src="https://github.com/centro-america/agendamento/blob/main/logo-colegio.png?raw=true" alt="Logo">
+  </header>
+
+  <form id="agendamento-form">
+    <h2>Reunião de Pais - 28/05/2025</h2>
+    
+    <label for="nome">Nome do responsável</label>
+    <input type="text" id="nome" name="nome" required>
+
+    <label for="aluno">Nome do aluno</label>
+    <input type="text" id="aluno" name="aluno" required>
+
+    <div class="input-row">
       <div>
-        <h1 class="text-2xl md:text-3xl font-bold">Colégio Adventista Centro América</h1>
-        <p class="text-blue-100 mt-1">Agendamento de reunião de pais</p>
+        <label for="turma">Turma</label>
+        <select id="turma" name="turma" required>
+          <option value="">Selecione...</option>
+          <option>Maternal MA - Marilene Soares da Silva Rosa</option>
+          <option>Maternal TA - Tatiane Maria Souza da Costa</option>
+          <option>Pré 1 MA - Josiele da Costa de Souza</option>
+          <option>Pré 1 TA - Josiele da Costa de Souza</option>
+          <option>Pré 1 TB - Rosane Ambrósio de Oliveira dos Santos</option>
+          <option>Pré 2 MA - Maria Letícia Sousa de Araújo</option>
+          <option>Pré 2 TA - Maria Letícia Sousa de Araújo</option>
+          <option>Pré 2 TB - Valéria Pereira Belisario de Paula</option>
+          <option>Pré 3 MA - Raissa Manoele Costa Pereira</option>
+          <option>Pré 3 MB - Valéria Pereira Belisario de Paula</option>
+          <option>Pré 3 TA - Heulla Fhernanda Menezes</option>
+          <option>Pré 3 TB - Raissa Manoele Costa Pereira</option>
+          <option>1º ano MA - Eliane Silva dos Santos Cruz</option>
+          <option>1º ano MB - Leticia da Silva Pinheiro</option>
+          <option>1º ano TA - Eliane Silva dos Santos Cruz</option>
+          <option>1º ano TB - Leticia da Silva Pinheiro</option>
+          <option>1º ano TC - Nadir de Barros</option>
+        </select>
       </div>
-      <img src="https://github.com/centro-america/agendamento/blob/main/logo-colegio.png?raw=true" alt="Logo" class="h-16 w-auto">
+      <div>
+        <label for="horario">Horário</label>
+        <select id="horario" name="horario" required></select>
+      </div>
     </div>
-  </div>
 
-  <main class="container mx-auto max-w-4xl px-4 py-8 -mt-8">
-    <div class="bg-white rounded-lg shadow-md p-6 md:p-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Preencha os dados para agendar</h2>
+    <button type="submit">Agendar</button>
+  </form>
 
-      <form id="agendamentoForm" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label for="responsavel" class="block text-sm font-medium text-gray-700 mb-1">Nome do Responsável</label>
-            <input type="text" id="responsavel" name="responsavel" required
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-          <div>
-            <label for="aluno" class="block text-sm font-medium text-gray-700 mb-1">Nome do Aluno</label>
-            <input type="text" id="aluno" name="aluno" required
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          </div>
-        </div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
+      authDomain: "agendamento-c4753.firebaseapp.com",
+      projectId: "agendamento-c4753",
+      storageBucket: "agendamento-c4753.firebasestorage.app",
+      messagingSenderId: "953838698372",
+      appId: "1:953838698372:web:f07ca99f1245c97c1ce7d1",
+      measurementId: "G-72V3RZG3MF"
+    };
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label for="turma" class="block text-sm font-medium text-gray-700 mb-1">Turma</label>
-            <select id="turma" name="turma" required
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="" disabled selected>Selecione a turma</option>
-              <option value="1A">1º Ano A</option>
-              <option value="1B">1º Ano B</option>
-              <option value="2A">2º Ano A</option>
-              <option value="2B">2º Ano B</option>
-              <option value="3A">3º Ano A</option>
-              <option value="3B">3º Ano B</option>
-            </select>
-          </div>
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-          <div>
-            <label for="horario" class="block text-sm font-medium text-gray-700 mb-1">Horário</label>
-            <select id="horario" name="horario" required
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="" disabled selected>Selecione um horário</option>
-              <option value="07:10">07:10</option>
-              <option value="07:20">07:20</option>
-              <option value="07:30">07:30</option>
-              <option value="07:40">07:40</option>
-              <option value="07:50">07:50</option>
-              <option value="08:00">08:00</option>
-              <option value="08:10">08:10</option>
-              <option value="08:20">08:20</option>
-              <option value="08:30">08:30</option>
-              <option value="08:40">08:40</option>
-              <option value="08:50">08:50</option>
-              <option value="09:00">09:00</option>
-              <option value="09:10">09:10</option>
-              <option value="09:20">09:20</option>
-              <option value="09:30">09:30</option>
-              <option value="09:40">09:40</option>
-              <option value="09:50">09:50</option>
-              <option value="10:00">10:00</option>
-              <option value="10:10">10:10</option>
-              <option value="10:20">10:20</option>
-              <option value="10:30">10:30</option>
-              <option value="10:40">10:40</option>
-              <option value="10:50">10:50</option>
-            </select>
-          </div>
-        </div>
+    const horarios = [
+      "07:10","07:20","07:30","07:40","07:50","08:00",
+      "08:10","08:20","08:30","08:40","08:50","09:00",
+      "09:10","09:20","09:30","09:40","09:50","10:00",
+      "10:10","10:20","10:30","10:40","10:50"
+    ];
 
-        <div class="pt-4">
-          <button type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
-            <i class="fas fa-calendar-check mr-2"></i> Agendar Reunião
-          </button>
-        </div>
-      </form>
-    </div>
-  </main>
+    const turmaSelect = document.getElementById("turma");
+    const horarioSelect = document.getElementById("horario");
+
+    async function carregarHorariosDisponiveis(turma) {
+      horarioSelect.innerHTML = "";
+
+      if (!turma) {
+        horarios.forEach(horario => {
+          const option = document.createElement("option");
+          option.value = horario;
+          option.textContent = horario;
+          horarioSelect.appendChild(option);
+        });
+        return;
+      }
+
+      const q = query(collection(db, "agendamentos"), where("turma", "==", turma));
+      const querySnapshot = await getDocs(q);
+
+      const horariosAgendados = new Set();
+      querySnapshot.forEach(doc => {
+        horariosAgendados.add(doc.data().horario);
+      });
+
+      horarios.forEach(horario => {
+        const option = document.createElement("option");
+        option.value = horario;
+        if (horariosAgendados.has(horario)) {
+          option.textContent = `${horario} (Indisponível)`;
+          option.disabled = true;
+        } else {
+          option.textContent = horario;
+        }
+        horarioSelect.appendChild(option);
+      });
+    }
+
+    turmaSelect.addEventListener("change", () => {
+      carregarHorariosDisponiveis(turmaSelect.value);
+    });
+
+    carregarHorariosDisponiveis("");
+
+    document.getElementById("agendamento-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const nome = document.getElementById("nome").value.trim();
+      const aluno = document.getElementById("aluno").value.trim();
+      const turma = turmaSelect.value;
+      const horario = horarioSelect.value;
+
+      if (!nome || !aluno || !turma || !horario) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "agendamentos"), { nome, aluno, turma, horario });
+        alert("Agendamento realizado com sucesso!");
+        carregarHorariosDisponiveis(turma);
+        document.getElementById("agendamento-form").reset();
+        horarioSelect.innerHTML = "";
+      } catch (error) {
+        console.error("Erro ao salvar agendamento:", error);
+        alert("Erro ao realizar agendamento. Tente novamente.");
+      }
+    });
+  </script>
 </body>
 </html>

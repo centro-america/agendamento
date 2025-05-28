@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Agendamento - Escola Educar</title>
+  <title>Agendamento - Colégio Adventista Centro América</title>
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     rel="stylesheet"
@@ -158,32 +158,16 @@
     button i {
       margin-right: 0.5rem;
     }
-    .bg-blue-50 {
-      background-color: #eff6ff;
+    /* Centralizar o título do formulário */
+    .form-title {
+      text-align: center;
+      margin-bottom: 1.5rem;
     }
-    .border-t {
-      border-top: 1px solid #dbeafe;
-    }
-    .border-blue-100 {
-      border-color: #dbeafe;
-    }
-    .text-blue-800 {
-      color: #1e40af;
-    }
-    .text-sm {
-      font-size: 0.875rem;
-    }
-    .p-2 {
-      padding: 0.5rem;
-    }
-    .rounded-full {
-      border-radius: 9999px;
-    }
-    .mr-2 {
-      margin-right: 0.5rem;
-    }
-    .mr-3 {
-      margin-right: 0.75rem;
+    /* Grid para turma e horário lado a lado */
+    .grid-2cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
     }
     /* Modal */
     #confirmacaoModal {
@@ -256,7 +240,7 @@
     <div class="container mx-auto max-w-4xl">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl md:text-3xl font-bold">Escola Educar</h1>
+          <h1 class="text-2xl md:text-3xl font-bold">Colégio Adventista Centro América</h1>
           <p class="text-blue-100 mt-1">Agendamento de reunião de pais</p>
         </div>
         <div class="bg-white p-3 rounded-full">
@@ -269,7 +253,7 @@
   <main class="container mx-auto max-w-4xl px-4 py-8 -mt-8">
     <div class="bg-white rounded-lg card-shadow overflow-hidden">
       <div class="p-6 md:p-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Preencha os dados para agendar</h2>
+        <h2 class="text-2xl font-bold text-gray-800 form-title">Preencha os dados para agendar</h2>
 
         <form id="agendamentoForm" class="space-y-6">
           <div>
@@ -293,7 +277,7 @@
             <label for="aluno" class="block text-sm font-medium text-gray-700 mb-1">Nome do Aluno</label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i class="fas fa-child text-gray-400"></i>
+                <i class="fas fa-user-graduate text-gray-400"></i>
               </div>
               <input
                 type="text"
@@ -301,146 +285,75 @@
                 name="aluno"
                 required
                 class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 input-focus focus:outline-none transition duration-200"
-                placeholder="Digite o nome do aluno"
+                placeholder="Digite o nome completo do aluno"
               />
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid-2cols">
             <div>
               <label for="turma" class="block text-sm font-medium text-gray-700 mb-1">Turma</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="fas fa-users text-gray-400"></i>
-                </div>
-                <select
-                  id="turma"
-                  name="turma"
-                  required
-                  class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 input-focus focus:outline-none appearance-none bg-white"
-                >
-                  <option value="" disabled selected>Selecione a turma</option>
-                  <option value="1A">1º Ano A</option>
-                  <option value="1B">1º Ano B</option>
-                  <option value="2A">2º Ano A</option>
-                  <option value="2B">2º Ano B</option>
-                  <option value="3A">3º Ano A</option>
-                  <option value="3B">3º Ano B</option>
-                </select>
-                <div
-                  class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                >
-                  <i class="fas fa-chevron-down text-gray-400"></i>
-                </div>
-              </div>
+              <select
+                id="turma"
+                name="turma"
+                required
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 input-focus focus:outline-none transition duration-200"
+              >
+                <option value="" disabled selected>Selecione a turma</option>
+                <option value="1º Ano">1º Ano</option>
+                <option value="2º Ano">2º Ano</option>
+                <option value="3º Ano">3º Ano</option>
+                <option value="4º Ano">4º Ano</option>
+                <option value="5º Ano">5º Ano</option>
+              </select>
             </div>
 
             <div>
               <label for="horario" class="block text-sm font-medium text-gray-700 mb-1">Horário</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="far fa-clock text-gray-400"></i>
-                </div>
-                <select
-                  id="horario"
-                  name="horario"
-                  required
-                  class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 input-focus focus:outline-none appearance-none bg-white"
-                >
-                  <option value="" disabled selected>Selecione um horário</option>
-                  <option value="07:10">07:10</option>
-                  <option value="07:20">07:20</option>
-                  <option value="07:30">07:30</option>
-                  <option value="07:40">07:40</option>
-                  <option value="07:50">07:50</option>
-                  <option value="08:00">08:00</option>
-                  <option value="08:10">08:10</option>
-                  <option value="08:20">08:20</option>
-                  <option value="08:30">08:30</option>
-                  <option value="08:40">08:40</option>
-                  <option value="08:50">08:50</option>
-                  <option value="09:00">09:00</option>
-                  <option value="09:10">09:10</option>
-                  <option value="09:20">09:20</option>
-                  <option value="09:30">09:30</option>
-                  <option value="09:40">09:40</option>
-                  <option value="09:50">09:50</option>
-                  <option value="10:00">10:00</option>
-                  <option value="10:10">10:10</option>
-                  <option value="10:20">10:20</option>
-                  <option value="10:30">10:30</option>
-                  <option value="10:40">10:40</option>
-                  <option value="10:50">10:50</option>
-                </select>
-                <div
-                  class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                >
-                  <i class="fas fa-chevron-down text-gray-400"></i>
-                </div>
-              </div>
+              <select
+                id="horario"
+                name="horario"
+                required
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 input-focus focus:outline-none transition duration-200"
+              >
+                <option value="" disabled selected>Selecione o horário</option>
+                <option value="07:10">07:10</option>
+                <option value="07:20">07:20</option>
+                <option value="07:30">07:30</option>
+                <option value="07:40">07:40</option>
+                <option value="07:50">07:50</option>
+                <option value="08:00">08:00</option>
+                <option value="08:10">08:10</option>
+                <option value="08:20">08:20</option>
+                <option value="08:30">08:30</option>
+                <option value="08:40">08:40</option>
+                <option value="08:50">08:50</option>
+                <option value="09:00">09:00</option>
+                <option value="09:10">09:10</option>
+                <option value="09:20">09:20</option>
+                <option value="09:30">09:30</option>
+                <option value="09:40">09:40</option>
+                <option value="09:50">09:50</option>
+                <option value="10:00">10:00</option>
+                <option value="10:10">10:10</option>
+                <option value="10:20">10:20</option>
+                <option value="10:30">10:30</option>
+                <option value="10:40">10:40</option>
+                <option value="10:50">10:50</option>
+              </select>
             </div>
           </div>
 
-          <div class="pt-4">
-            <button
-              type="submit"
-              class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center"
-            >
-              <i class="fas fa-calendar-check mr-2"></i> Agendar Reunião
-            </button>
-          </div>
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700">
+            <i class="fas fa-calendar-check"></i> Agendar
+          </button>
         </form>
-      </div>
-
-      <div class="bg-blue-50 px-6 py-4 border-t border-blue-100">
-        <div class="flex items-center">
-          <div class="bg-blue-100 p-2 rounded-full mr-3">
-            <i class="fas fa-info-circle text-blue-600"></i>
-          </div>
-          <p class="text-sm text-blue-800">
-            Após o agendamento, você receberá um e-mail de confirmação com os
-            detalhes da reunião.
-          </p>
-        </div>
       </div>
     </div>
   </main>
 
-  <div
-    id="confirmacaoModal"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden"
-  >
-    <div
-      class="bg-white rounded-lg max-w-md w-full p-6 transform transition-all duration-300 scale-95 opacity-0"
-    >
-      <div class="text-center">
-        <div
-          class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4"
-        >
-          <i class="fas fa-check text-green-600 text-xl"></i>
-        </div>
-        <h3 class="text-lg font-medium text-gray-900 mb-2">Agendamento confirmado!</h3>
-        <div class="mt-2 text-sm text-gray-500 space-y-2">
-          <p id="confirmResponsavel"></p>
-          <p id="confirmAluno"></p>
-          <p id="confirmTurma"></p>
-          <p id="confirmHorario"></p>
-        </div>
-        <div class="mt-6">
-          <button
-            id="fecharModal"
-            type="button"
-            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-          >
-            Fechar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <footer class="bg-white border-t border-gray-200 py-6 mt-auto">
-    &copy; 2025 Escola Educar. Todos os direitos reservados.
+  <footer class="text-center text-gray-500 text-sm mt-auto">
+    &copy; 2025 Colégio Adventista Centro América. Todos os direitos reservados.
   </footer>
 
   <script>
@@ -490,5 +403,19 @@
       }
     });
   </script>
+
+  <!-- Modal -->
+  <div id="confirmacaoModal" aria-hidden="true">
+    <div role="dialog" aria-modal="true" aria-labelledby="modalTitulo" aria-describedby="modalDescricao">
+      <h3 id="modalTitulo" class="text-lg font-bold text-center mb-4">Confirmação de Agendamento</h3>
+      <p id="confirmResponsavel"></p>
+      <p id="confirmAluno"></p>
+      <p id="confirmTurma"></p>
+      <p id="confirmHorario"></p>
+      <div class="text-center mt-6">
+        <button id="fecharModal" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-semibold">Fechar</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

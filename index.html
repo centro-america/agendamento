@@ -21,7 +21,7 @@
       padding: 24px 16px;
     }
     .container {
-      max-width: 768px;
+      max-width: 960px;
       margin: 0 auto;
     }
     .flex {
@@ -32,9 +32,6 @@
     }
     .justify-between {
       justify-content: space-between;
-    }
-    .space-x-4 > * + * {
-      margin-left: 1rem;
     }
     h1 {
       font-weight: 700;
@@ -50,7 +47,7 @@
       background: white;
       border-radius: 8px;
       box-shadow: 0 0 8px rgb(0 0 0 / 0.1);
-      margin: -32px auto 32px auto;
+      margin: 40px auto;
       padding: 32px;
       max-width: 768px;
     }
@@ -86,30 +83,14 @@
     select:focus {
       border-color: #2563eb;
     }
-    .relative {
-      position: relative;
-    }
-    .absolute {
+    .input-icon {
       position: absolute;
-    }
-    .inset-y-0 {
-      top: 0;
-      bottom: 0;
-    }
-    .left-0 {
-      left: 0;
-    }
-    .pl-3 {
-      padding-left: 0.75rem;
-    }
-    .pointer-events-none {
-      pointer-events: none;
-    }
-    .text-gray-400 {
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
       color: #9ca3af;
-    }
-    .flex-wrap {
-      flex-wrap: wrap;
+      pointer-events: none;
+      font-size: 1rem;
     }
     .grid {
       display: grid;
@@ -119,6 +100,9 @@
     }
     .gap-6 {
       gap: 1.5rem;
+    }
+    .relative {
+      position: relative;
     }
     button {
       width: 100%;
@@ -139,9 +123,6 @@
     button:hover {
       background-color: #1e40af;
     }
-    .fa-calendar-check {
-      font-size: 1.25rem;
-    }
     footer {
       background: white;
       border-top: 1px solid #e5e7eb;
@@ -152,16 +133,6 @@
       max-width: 768px;
       margin: 0 auto 40px auto;
     }
-    /* Icon positioning inside inputs */
-    .input-icon {
-      position: absolute;
-      top: 50%;
-      left: 12px;
-      transform: translateY(-50%);
-      color: #9ca3af;
-      pointer-events: none;
-      font-size: 1rem;
-    }
   </style>
 </head>
 <body>
@@ -171,18 +142,11 @@
         <h1>Colégio Adventista Centro América</h1>
         <p class="subtitle">Agendamento de reunião de pais</p>
       </div>
-      <div class="flex items-center space-x-4">
-        <div
-          style="background:white; padding: 12px; border-radius: 9999px; display: flex; align-items:center; justify-content:center;"
-        >
-          <i class="fas fa-calendar-alt" style="color:#2563eb; font-size: 28px;"></i>
-        </div>
-        <img
-          src="https://github.com/centro-america/agendamento/blob/main/logo-colegio.png?raw=true"
-          alt="Logo Colégio Adventista Centro América"
-          style="height: 60px; object-fit: contain;"
-        />
-      </div>
+      <img
+        src="https://github.com/centro-america/agendamento/blob/main/logo-colegio.png?raw=true"
+        alt="Logo Colégio Adventista Centro América"
+        style="height: 60px; object-fit: contain;"
+      />
     </div>
   </header>
 
@@ -272,9 +236,5 @@
     <p>© 2023 Colégio Adventista Centro América. Todos os direitos reservados.</p>
     <p>Entre em contato: contato@escolaeducar.com.br | (11) 1234-5678</p>
   </footer>
-
-  <script>
-    // Aqui você pode adicionar seus scripts JS se necessário
-  </script>
 </body>
 </html>

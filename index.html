@@ -2,73 +2,36 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Agendamento Escolar</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <style>
-    .gradient-bg {
-      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-    }
-    .form-shadow {
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-    .success-message {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.3s ease;
-    }
-    .success-message.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  </style>
 </head>
-<body class="min-h-screen bg-gray-50">
-  <div class="gradient-bg text-white py-6">
-    <div class="container mx-auto px-4 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <i class="fas fa-calendar-alt text-3xl"></i>
-        <h1 class="text-2xl md:text-3xl font-bold">Agendamento Escolar</h1>
-      </div>
-    </div>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-xl mx-auto bg-white p-8 rounded shadow">
+    <h1 class="text-2xl font-bold mb-6 text-center">Agendamento Escolar</h1>
+    <form id="schedulingForm" class="space-y-4">
+      <input id="responsibleName" class="w-full border p-2 rounded" type="text" placeholder="Nome do Responsável" required>
+      <input id="studentName" class="w-full border p-2 rounded" type="text" placeholder="Nome do Aluno" required>
+      <select id="classGroup" class="w-full border p-2 rounded" required>
+        <option value="">Selecione a Turma</option>
+        <option value="Turma A - Manhã">Turma A - Manhã</option>
+        <option value="Turma B - Manhã">Turma B - Manhã</option>
+      </select>
+      <select id="scheduleTime" class="w-full border p-2 rounded" required>
+        <option value="">Selecione o Horário</option>
+        <option value="08:00 - 09:00">08:00 - 09:00</option>
+        <option value="09:00 - 10:00">09:00 - 10:00</option>
+        <option value="10:00 - 11:00">10:00 - 11:00</option>
+      </select>
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded w-full">Agendar</button>
+    </form>
+    <p id="message" class="text-center mt-4 font-semibold"></p>
   </div>
 
-  <div class="container mx-auto px-4 py-12">
-    <div class="max-w-2xl mx-auto bg-white rounded-xl form-shadow p-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6">Preencha os dados para agendamento</h2>
-      <form id="schedulingForm" class="space-y-6">
-        <input id="responsibleName" required placeholder="Nome do Responsável" class="w-full border rounded px-4 py-2" />
-        <input id="studentName" required placeholder="Nome do Aluno" class="w-full border rounded px-4 py-2" />
-        <select id="classGroup" required class="w-full border rounded px-4 py-2">
-          <option value="" disabled selected>Selecione a turma</option>
-          <option>Turma A - Manhã</option>
-          <option>Turma B - Manhã</option>
-          <option>Turma C - Tarde</option>
-          <option>Turma D - Tarde</option>
-          <option>Turma E - Integral</option>
-        </select>
-        <select id="scheduleTime" required class="w-full border rounded px-4 py-2">
-          <option value="" disabled selected>Selecione o horário</option>
-          <option>08:00 - 09:00</option>
-          <option>09:00 - 10:00</option>
-          <option>10:00 - 11:00</option>
-          <option>14:00 - 15:00</option>
-          <option>15:00 - 16:00</option>
-          <option>16:00 - 17:00</option>
-        </select>
-        <button type="submit" class="w-full gradient-bg text-white py-3 px-4 rounded hover:opacity-90 transition">Agendar</button>
-      </form>
-      <div id="successMessage" class="success-message mt-6 p-4 bg-green-50 border border-green-200 rounded text-green-700">
-        Agendamento realizado com sucesso!
-      </div>
-    </div>
-  </div>
-
-  <!-- Firebase SDK -->
+  <!-- Firebase (via script tag) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
@@ -84,27 +47,41 @@
     const db = getFirestore(app);
 
     const form = document.getElementById("schedulingForm");
-    const successMessage = document.getElementById("successMessage");
+    const message = document.getElementById("message");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const data = {
-        responsibleName: document.getElementById("responsibleName").value,
-        studentName: document.getElementById("studentName").value,
-        classGroup: document.getElementById("classGroup").value,
-        scheduleTime: document.getElementById("scheduleTime").value,
-        createdAt: new Date().toISOString()
-      };
+      const responsibleName = form.responsibleName.value;
+      const studentName = form.studentName.value;
+      const classGroup = form.classGroup.value;
+      const scheduleTime = form.scheduleTime.value;
 
-      try {
-        await addDoc(collection(db, "agendamentos"), data);
-        successMessage.classList.add("show");
-        form.reset();
-        setTimeout(() => successMessage.classList.remove("show"), 5000);
-      } catch (error) {
-        alert("Erro ao agendar: " + error.message);
+      // Verificar se o horário já está ocupado
+      const q = query(
+        collection(db, "agendamentos"),
+        where("scheduleTime", "==", scheduleTime)
+      );
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        message.textContent = "⚠️ Este horário já está agendado.";
+        message.className = "text-red-600 text-center mt-4 font-semibold";
+        return;
       }
+
+      // Salvar novo agendamento
+      await addDoc(collection(db, "agendamentos"), {
+        responsibleName,
+        studentName,
+        classGroup,
+        scheduleTime,
+        createdAt: new Date()
+      });
+
+      message.textContent = "✅ Agendamento realizado com sucesso!";
+      message.className = "text-green-600 text-center mt-4 font-semibold";
+      form.reset();
     });
   </script>
 </body>

@@ -1,87 +1,175 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Agendamento Escolar</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    form {
+      max-width: 500px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    select, input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    .success-message {
+      display: none;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 5px;
+    }
+    .success-message.show {
+      display: block;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 p-6">
-  <div class="max-w-xl mx-auto bg-white p-8 rounded shadow">
-    <h1 class="text-2xl font-bold mb-6 text-center">Agendamento Escolar</h1>
-    <form id="schedulingForm" class="space-y-4">
-      <input id="responsibleName" class="w-full border p-2 rounded" type="text" placeholder="Nome do Responsável" required>
-      <input id="studentName" class="w-full border p-2 rounded" type="text" placeholder="Nome do Aluno" required>
-      <select id="classGroup" class="w-full border p-2 rounded" required>
-        <option value="">Selecione a Turma</option>
-        <option value="Turma A - Manhã">Turma A - Manhã</option>
-        <option value="Turma B - Manhã">Turma B - Manhã</option>
-      </select>
-      <select id="scheduleTime" class="w-full border p-2 rounded" required>
-        <option value="">Selecione o Horário</option>
-        <option value="08:00 - 09:00">08:00 - 09:00</option>
-        <option value="09:00 - 10:00">09:00 - 10:00</option>
-        <option value="10:00 - 11:00">10:00 - 11:00</option>
-      </select>
-      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded w-full">Agendar</button>
-    </form>
-    <p id="message" class="text-center mt-4 font-semibold"></p>
-  </div>
+<body>
+  <h1>Formulário de Agendamento</h1>
+  <form id="schedulingForm">
+    <label for="responsibleName">Nome do Responsável:</label>
+    <input type="text" id="responsibleName" name="responsibleName" required>
 
-  <!-- Firebase (via script tag) -->
+    <label for="studentName">Nome do Aluno:</label>
+    <input type="text" id="studentName" name="studentName" required>
+
+    <label for="classGroup">Turma:</label>
+    <select id="classGroup" name="classGroup" required>
+      <option disabled selected>Selecione a turma</option>
+      <option>Maternal MA - Marilene Soares da Silva Rosa</option>
+      <option>Maternal TA - Tatiane Maria Souza da Costa</option>
+      <option>Pré 1 MA - Josiele da Costa de Souza</option>
+      <option>Pré 1 TA - Josiele da Costa de Souza</option>
+      <option>Pré 1 TB - Rosane Ambrósio de Oliveira dos Santos</option>
+      <option>Pré 2 MA - Maria Letícia Sousa de Araújo</option>
+      <option>Pré 2 TA - Maria Letícia Sousa de Araújo</option>
+      <option>Pré 2 TB - Valéria Pereira Belisario de Paula</option>
+      <option>Pré 3 MA - Raissa Manoele Costa Pereira</option>
+      <option>Pré 3 MB - Valéria Pereira Belisario de Paula</option>
+      <option>Pré 3 TA - Heulla Fhernanda Menezes</option>
+      <option>Pré 3 TB - Raissa Manoele Costa Pereira</option>
+      <option>1º ano MA - Eliane Silva dos Santos Cruz</option>
+      <option>1º ano MB - Leticia da Silva Pinheiro</option>
+      <option>1º ano TA - Eliane Silva dos Santos Cruz</option>
+      <option>1º ano TB - Leticia da Silva Pinheiro</option>
+      <option>1º ano TC - Nadir de Barros</option>
+    </select>
+
+    <label for="scheduleTime">Horário:</label>
+    <select id="scheduleTime" name="scheduleTime" required>
+      <option disabled selected>Carregando horários...</option>
+    </select>
+
+    <button type="submit">Agendar</button>
+  </form>
+
+  <div id="successMessage" class="success-message">Agendamento realizado com sucesso!</div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
-      authDomain: "agendamento-c4753.firebaseapp.com",
-      projectId: "agendamento-c4753",
-      storageBucket: "agendamento-c4753.appspot.com",
-      messagingSenderId: "953838698372",
-      appId: "1:953838698372:web:f07ca99f1245c97c1ce7d1",
-      measurementId: "G-72V3RZG3MF"
+      apiKey: "SUA_API_KEY",
+      authDomain: "SEU_AUTH_DOMAIN",
+      projectId: "SEU_PROJECT_ID",
+      storageBucket: "SEU_STORAGE_BUCKET",
+      messagingSenderId: "SEU_SENDER_ID",
+      appId: "SEU_APP_ID",
+      measurementId: "SEU_MEASUREMENT_ID"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const form = document.getElementById("schedulingForm");
-    const message = document.getElementById("message");
+    function gerarHorarios(inicio, fim, intervaloMinutos) {
+      const horarios = [];
+      let [hora, minuto] = inicio.split(":").map(Number);
+      const [fimHora, fimMinuto] = fim.split(":").map(Number);
 
-    form.addEventListener("submit", async (e) => {
+      while (hora < fimHora || (hora === fimHora && minuto <= fimMinuto)) {
+        const h1 = String(hora).padStart(2, '0');
+        const m1 = String(minuto).padStart(2, '0');
+
+        minuto += intervaloMinutos;
+        if (minuto >= 60) {
+          hora++;
+          minuto -= 60;
+        }
+
+        const h2 = String(hora).padStart(2, '0');
+        const m2 = String(minuto).padStart(2, '0');
+
+        if (hora < fimHora || (hora === fimHora && minuto <= fimMinuto)) {
+          horarios.push(`${h1}:${m1} - ${h2}:${m2}`);
+        }
+      }
+      return horarios;
+    }
+
+    const horarios = gerarHorarios("07:10", "10:50", 10);
+
+    async function carregarHorariosDisponiveis() {
+      const snapshot = await getDocs(collection(db, "agendamentos"));
+      const horariosOcupados = snapshot.docs.map(doc => doc.data().scheduleTime);
+
+      const select = document.getElementById("scheduleTime");
+      select.innerHTML = '<option disabled selected>Selecione o horário</option>';
+
+      horarios.forEach(horario => {
+        const option = document.createElement("option");
+        option.value = horario;
+        option.textContent = horariosOcupados.includes(horario)
+          ? `${horario} - Indisponível`
+          : horario;
+        option.disabled = horariosOcupados.includes(horario);
+        select.appendChild(option);
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", carregarHorariosDisponiveis);
+
+    const form = document.getElementById("schedulingForm");
+    const successMessage = document.getElementById("successMessage");
+
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const responsibleName = form.responsibleName.value;
-      const studentName = form.studentName.value;
-      const classGroup = form.classGroup.value;
-      const scheduleTime = form.scheduleTime.value;
+      const responsibleName = document.getElementById("responsibleName").value;
+      const studentName = document.getElementById("studentName").value;
+      const classGroup = document.getElementById("classGroup").value;
+      const scheduleTime = document.getElementById("scheduleTime").value;
 
-      // Verificar se o horário já está ocupado
-      const q = query(
-        collection(db, "agendamentos"),
-        where("scheduleTime", "==", scheduleTime)
-      );
-      const querySnapshot = await getDocs(q);
+      try {
+        await addDoc(collection(db, "agendamentos"), {
+          responsibleName,
+          studentName,
+          classGroup,
+          scheduleTime,
+          timestamp: new Date().toISOString()
+        });
 
-      if (!querySnapshot.empty) {
-        message.textContent = "⚠️ Este horário já está agendado.";
-        message.className = "text-red-600 text-center mt-4 font-semibold";
-        return;
+        successMessage.classList.add("show");
+        form.reset();
+        carregarHorariosDisponiveis();
+
+        setTimeout(() => {
+          successMessage.classList.remove("show");
+        }, 5000);
+      } catch (error) {
+        alert("Erro ao agendar: " + error.message);
       }
-
-      // Salvar novo agendamento
-      await addDoc(collection(db, "agendamentos"), {
-        responsibleName,
-        studentName,
-        classGroup,
-        scheduleTime,
-        createdAt: new Date()
-      });
-
-      message.textContent = "✅ Agendamento realizado com sucesso!";
-      message.className = "text-green-600 text-center mt-4 font-semibold";
-      form.reset();
     });
   </script>
 </body>

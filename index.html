@@ -1,175 +1,149 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agendamento</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agendamento Escolar</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
+      margin: 40px;
+      background-color: #f4f4f4;
     }
     form {
-      max-width: 500px;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    fieldset {
+      border: none;
+      margin-bottom: 20px;
     }
     label {
       display: block;
-      margin-top: 10px;
-    }
-    select, input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-    }
-    .success-message {
-      display: none;
       margin-top: 15px;
-      padding: 10px;
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-      border-radius: 5px;
+      font-weight: bold;
     }
-    .success-message.show {
-      display: block;
+    select, input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1976D2;
     }
   </style>
 </head>
 <body>
-  <h1>Formulário de Agendamento</h1>
-  <form id="schedulingForm">
-    <label for="responsibleName">Nome do Responsável:</label>
-    <input type="text" id="responsibleName" name="responsibleName" required>
 
-    <label for="studentName">Nome do Aluno:</label>
-    <input type="text" id="studentName" name="studentName" required>
+  <form id="agendamento-form">
+    <h2>Agendamento Escolar</h2>
+    <fieldset>
+      <label for="nome">Nome do responsável</label>
+      <input type="text" id="nome" name="nome" required>
 
-    <label for="classGroup">Turma:</label>
-    <select id="classGroup" name="classGroup" required>
-      <option disabled selected>Selecione a turma</option>
-      <option>Maternal MA - Marilene Soares da Silva Rosa</option>
-      <option>Maternal TA - Tatiane Maria Souza da Costa</option>
-      <option>Pré 1 MA - Josiele da Costa de Souza</option>
-      <option>Pré 1 TA - Josiele da Costa de Souza</option>
-      <option>Pré 1 TB - Rosane Ambrósio de Oliveira dos Santos</option>
-      <option>Pré 2 MA - Maria Letícia Sousa de Araújo</option>
-      <option>Pré 2 TA - Maria Letícia Sousa de Araújo</option>
-      <option>Pré 2 TB - Valéria Pereira Belisario de Paula</option>
-      <option>Pré 3 MA - Raissa Manoele Costa Pereira</option>
-      <option>Pré 3 MB - Valéria Pereira Belisario de Paula</option>
-      <option>Pré 3 TA - Heulla Fhernanda Menezes</option>
-      <option>Pré 3 TB - Raissa Manoele Costa Pereira</option>
-      <option>1º ano MA - Eliane Silva dos Santos Cruz</option>
-      <option>1º ano MB - Leticia da Silva Pinheiro</option>
-      <option>1º ano TA - Eliane Silva dos Santos Cruz</option>
-      <option>1º ano TB - Leticia da Silva Pinheiro</option>
-      <option>1º ano TC - Nadir de Barros</option>
-    </select>
+      <label for="aluno">Nome do aluno</label>
+      <input type="text" id="aluno" name="aluno" required>
 
-    <label for="scheduleTime">Horário:</label>
-    <select id="scheduleTime" name="scheduleTime" required>
-      <option disabled selected>Carregando horários...</option>
-    </select>
+      <label for="turma">Turma</label>
+      <select id="turma" name="turma" required>
+        <option value="">Selecione...</option>
+        <option>Maternal MA - Marilene Soares da Silva Rosa</option>
+        <option>Maternal TA - Tatiane Maria Souza da Costa</option>
+        <option>Pré 1 MA - Josiele da Costa de Souza</option>
+        <option>Pré 1 TA - Josiele da Costa de Souza</option>
+        <option>Pré 1 TB - Rosane Ambrósio de Oliveira dos Santos</option>
+        <option>Pré 2 MA - Maria Letícia Sousa de Araújo</option>
+        <option>Pré 2 TA - Maria Letícia Sousa de Araújo</option>
+        <option>Pré 2 TB - Valéria Pereira Belisario de Paula</option>
+        <option>Pré 3 MA - Raissa Manoele Costa Pereira</option>
+        <option>Pré 3 MB - Valéria Pereira Belisario de Paula</option>
+        <option>Pré 3 TA - Heulla Fhernanda Menezes</option>
+        <option>Pré 3 TB - Raissa Manoele Costa Pereira</option>
+        <option>1º ano MA - Eliane Silva dos Santos Cruz</option>
+        <option>1º ano MB - Leticia da Silva Pinheiro</option>
+        <option>1º ano TA - Eliane Silva dos Santos Cruz</option>
+        <option>1º ano TB - Leticia da Silva Pinheiro</option>
+        <option>1º ano TC - Nadir de Barros</option>
+      </select>
+
+      <label for="horario">Horário</label>
+      <select id="horario" name="horario" required></select>
+    </fieldset>
 
     <button type="submit">Agendar</button>
   </form>
 
-  <div id="successMessage" class="success-message">Agendamento realizado com sucesso!</div>
-
+  <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
-       apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
-       authDomain: "agendamento-c4753.firebaseapp.com",
-       projectId: "agendamento-c4753",
-       storageBucket: "agendamento-c4753.firebasestorage.app",
-       messagingSenderId: "953838698372",
-       appId: "1:953838698372:web:f07ca99f1245c97c1ce7d1",
-       measurementId: "G-72V3RZG3MF"
+      apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
+      authDomain: "agendamento-c4753.firebaseapp.com",
+      projectId: "agendamento-c4753",
+      storageBucket: "agendamento-c4753.firebasestorage.app",
+      messagingSenderId: "953838698372",
+      appId: "1:953838698372:web:f07ca99f1245c97c1ce7d1",
+      measurementId: "G-72V3RZG3MF"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    function gerarHorarios(inicio, fim, intervaloMinutos) {
-      const horarios = [];
-      let [hora, minuto] = inicio.split(":").map(Number);
-      const [fimHora, fimMinuto] = fim.split(":").map(Number);
-
-      while (hora < fimHora || (hora === fimHora && minuto <= fimMinuto)) {
-        const h1 = String(hora).padStart(2, '0');
-        const m1 = String(minuto).padStart(2, '0');
-
-        minuto += intervaloMinutos;
-        if (minuto >= 60) {
-          hora++;
-          minuto -= 60;
-        }
-
-        const h2 = String(hora).padStart(2, '0');
-        const m2 = String(minuto).padStart(2, '0');
-
-        if (hora < fimHora || (hora === fimHora && minuto <= fimMinuto)) {
-          horarios.push(`${h1}:${m1} - ${h2}:${m2}`);
-        }
-      }
-      return horarios;
-    }
-
-    const horarios = gerarHorarios("07:10", "10:50", 10);
+    // Preencher horários
+    const horarioSelect = document.getElementById("horario");
+    const horarios = [
+      "07:10","07:20","07:30","07:40","07:50","08:00",
+      "08:10","08:20","08:30","08:40","08:50","09:00",
+      "09:10","09:20","09:30","09:40","09:50","10:00",
+      "10:10","10:20","10:30","10:40","10:50"
+    ];
 
     async function carregarHorariosDisponiveis() {
-      const snapshot = await getDocs(collection(db, "agendamentos"));
-      const horariosOcupados = snapshot.docs.map(doc => doc.data().scheduleTime);
-
-      const select = document.getElementById("scheduleTime");
-      select.innerHTML = '<option disabled selected>Selecione o horário</option>';
+      const agendamentos = await getDocs(collection(db, "agendamentos"));
+      const horariosAgendados = new Set();
+      agendamentos.forEach(doc => {
+        horariosAgendados.add(doc.data().horario);
+      });
 
       horarios.forEach(horario => {
         const option = document.createElement("option");
         option.value = horario;
-        option.textContent = horariosOcupados.includes(horario)
-          ? `${horario} - Indisponível`
-          : horario;
-        option.disabled = horariosOcupados.includes(horario);
-        select.appendChild(option);
+        option.textContent = horariosAgendados.has(horario) ? `${horario} (Indisponível)` : horario;
+        option.disabled = horariosAgendados.has(horario);
+        horarioSelect.appendChild(option);
       });
     }
 
-    window.addEventListener("DOMContentLoaded", carregarHorariosDisponiveis);
+    carregarHorariosDisponiveis();
 
-    const form = document.getElementById("schedulingForm");
-    const successMessage = document.getElementById("successMessage");
-
-    form.addEventListener("submit", async function (e) {
+    // Enviar agendamento
+    document.getElementById("agendamento-form").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const responsibleName = document.getElementById("responsibleName").value;
-      const studentName = document.getElementById("studentName").value;
-      const classGroup = document.getElementById("classGroup").value;
-      const scheduleTime = document.getElementById("scheduleTime").value;
+      const nome = document.getElementById("nome").value;
+      const aluno = document.getElementById("aluno").value;
+      const turma = document.getElementById("turma").value;
+      const horario = document.getElementById("horario").value;
 
-      try {
-        await addDoc(collection(db, "agendamentos"), {
-          responsibleName,
-          studentName,
-          classGroup,
-          scheduleTime,
-          timestamp: new Date().toISOString()
-        });
+      await addDoc(collection(db, "agendamentos"), { nome, aluno, turma, horario });
 
-        successMessage.classList.add("show");
-        form.reset();
-        carregarHorariosDisponiveis();
-
-        setTimeout(() => {
-          successMessage.classList.remove("show");
-        }, 5000);
-      } catch (error) {
-        alert("Erro ao agendar: " + error.message);
-      }
+      alert("Agendamento realizado com sucesso!");
+      location.reload();
     });
   </script>
 </body>

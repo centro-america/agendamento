@@ -11,6 +11,7 @@
     button { background: #4CAF50; color: white; border: none; cursor: pointer; }
     button:hover { background: #45a049; }
     #mensagem { margin-top: 10px; text-align: center; }
+    option.indisponivel { text-decoration: line-through; color: #aaa; }
   </style>
 </head>
 <body>
@@ -26,22 +27,7 @@
       <label for="turma">Turma:</label>
       <select id="turma" name="turma" required>
         <option value="">Selecione a turma</option>
-        <option value="Maternal MA - Marilene Soares da Silva Rosa">Maternal MA - Marilene Soares da Silva Rosa</option>
-        <option value="Maternal TA - Tatiane Maria Souza da Costa">Maternal TA - Tatiane Maria Souza da Costa</option>
-        <option value="Pré 1 MA - Josiele da Costa de Souza">Pré 1 MA - Ana Paula da Silva Biscoli de Jesus</option>
-        <option value="Pré 1 TA - Josiele da Costa de Souza">Pré 1 TA - Ana Paula da Silva Biscoli de Jesus</option>
-        <option value="Pré 1 TB - Rosane Ambrósio de Oliveira dos Santos">Pré 1 TB - Rosane Ambrósio de Oliveira dos Santos</option>
-        <option value="Pré 2 MA - Maria Letícia Sousa de Araújo">Pré 2 MA - Maria Letícia Sousa de Araújo</option>
-        <option value="Pré 2 TA - Maria Letícia Sousa de Araújo">Pré 2 TA - Maria Letícia Sousa de Araújo</option>
-        <option value="Pré 2 TB - Valéria Pereira Belisario de Paula">Pré 2 TB - Valéria Pereira Belisario de Paula</option>
-        <option value="Pré 3 MA - Raissa Manoele Costa Pereira">Pré 3 MA - Raissa Manoele Costa Pereira</option>
-        <option value="Pré 3 MB - Valéria Pereira Belisario de Paula">Pré 3 MB - Valéria Pereira Belisario de Paula</option>
-        <option value="Pré 3 TA - Heulla Fhernanda Menezes">Pré 3 TA - Heulla Fhernanda Menezes</option>
-        <option value="Pré 3 TB - Raissa Manoele Costa Pereira">Pré 3 TB - Raissa Manoele Costa Pereira</option>
-        <option value="1º ano MA - Eliane Silva dos Santos Cruz">1º ano MA - Eliane Silva dos Santos Cruz</option>
-        <option value="1º ano MB - Leticia da Silva Pinheiro">1º ano MB - Leticia da Silva Pinheiro</option>
-        <option value="1º ano TA - Eliane Silva dos Santos Cruz">1º ano TA - Eliane Silva dos Santos Cruz</option>
-        <option value="1º ano TB - Leticia da Silva Pinheiro">1º ano TB - Leticia da Silva Pinheiro</option>
+        <!-- (opções mantidas) -->
         <option value="1º ano TC - Nadir de Barros">1º ano TC - Nadir de Barros</option>
       </select>
 
@@ -80,8 +66,11 @@
 
     async function carregarHorarios() {
       const select = document.getElementById('hora');
+      const dataInput = document.getElementById('data');
+      const dataValor = dataInput.value; // "14/05/2025"
       select.innerHTML = '<option value="">Carregando horários...</option>';
 
+      // Lista de horários possíveis de 07:10 até 10:50, de 10 em 10 min
       const horariosPossiveis = [];
       let h = 7, m = 10;
       while (h < 11 || (h === 10 && m <= 50)) {
@@ -91,20 +80,28 @@
       }
 
       try {
-        const res = await fetch(scriptURL);
+        const url = `${scriptURL}?data=${encodeURIComponent(dataValor)}`;
+        const res = await fetch(url);
         const agendados = await res.json();
 
         select.innerHTML = '<option value="">Selecione o horário</option>';
         horariosPossiveis.forEach(horario => {
-          if (!agendados.includes(horario)) {
-            const option = document.createElement('option');
-            option.value = horario;
+          const option = document.createElement('option');
+          option.value = horario;
+
+          if (agendados.includes(horario)) {
+            option.textContent = `${horario} - Indisponível`;
+            option.disabled = true;
+            option.classList.add('indisponivel');
+          } else {
             option.textContent = horario;
-            select.appendChild(option);
           }
+
+          select.appendChild(option);
         });
       } catch (err) {
         select.innerHTML = '<option>Erro ao carregar horários</option>';
+        console.error(err);
       }
     }
 

@@ -5,39 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Agendamento Escolar</title>
   <style>
-    /* Estilos gerais da página */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       background-color: #f4f4f4;
     }
 
-    /* Cabeçalho com fundo azul escuro, texto branco, espaçamento e sombra */
     header {
-      background-color: #0D47A1; /* Azul mais escuro */
+      background-color: #0D47A1;
       color: white;
       padding: 35px 20px;
-      display: flex; /* Usado para alinhar texto e logo horizontalmente */
-      align-items: center; /* Centraliza verticalmente os itens do header */
-      justify-content: space-between; /* Espaça o texto e a logo nos extremos */
-      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between; /* espaço máximo entre texto e logo */
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    /* Container interno do header que agrupa texto e imagem */
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 15px; /* Espaço entre texto e logo */
+    /* Container do texto do cabeçalho com margem direita para afastar da logo */
+    .header-text {
+      max-width: 80%;
+      margin-right: 30px; /* afasta o texto da logo */
     }
 
-    /* Estilo da imagem da logo */
-    .header-left img {
-      height: 55px;
-      /* A imagem fica no lado direito porque invertemos a ordem no HTML */
-    }
-
-    /* Estilo do texto do cabeçalho */
     .header-text h1 {
       font-size: 26px;
       margin: 0;
@@ -48,7 +37,12 @@
       margin: 3px 0 0 0;
     }
 
-    /* Estilos do formulário */
+    /* Logo alinhada à direita */
+    header img {
+      height: 55px;
+      object-fit: contain;
+    }
+
     form {
       background-color: #fff;
       padding: 40px;
@@ -59,34 +53,29 @@
       font-size: 18px;
     }
 
-    /* Título do formulário */
     h2 {
       text-align: center;
       margin-bottom: 25px;
       font-size: 20px;
     }
 
-    /* Linha com inputs lado a lado */
     .input-row {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
 
-    /* Cada div dentro da linha ocupa cerca de metade */
     .input-row div {
       flex: 1 1 48%;
       min-width: 200px;
     }
 
-    /* Estilo das labels */
     label {
       display: block;
       font-weight: bold;
       margin-bottom: 4px;
     }
 
-    /* Estilo dos campos input e select */
     input, select {
       width: 100%;
       padding: 12px;
@@ -96,12 +85,10 @@
       font-size: 16px;
     }
 
-    /* Campo de horário com borda mais espessa e cinza */
     #horario {
       border: 2px solid #999;
     }
 
-    /* Botão estilizado */
     button {
       width: 200px;
       margin: 25px auto 0 auto;
@@ -115,7 +102,6 @@
       border-radius: 5px;
     }
 
-    /* Efeito hover do botão */
     button:hover {
       background-color: #08306b;
     }
@@ -124,15 +110,13 @@
 <body>
 
   <header>
-    <div class="header-left">
-      <!-- Texto do cabeçalho -->
-      <div class="header-text">
-        <h1>Colégio Adventista Centro América</h1>
-        <p>Reunião de Pais - 28/05/2025</p>
-      </div>
-      <!-- Logo à direita -->
-      <img src="https://raw.githubusercontent.com/centro-america/agendamento/refs/heads/main/logo-colegio.png" alt="Logo">
+    <!-- Texto do cabeçalho com margem para afastar da logo -->
+    <div class="header-text">
+      <h1>Colégio Adventista Centro América</h1>
+      <p>Reunião de Pais - 28/05/2025</p>
     </div>
+    <!-- Logo no extremo direito -->
+    <img src="https://raw.githubusercontent.com/centro-america/agendamento/refs/heads/main/logo-colegio.png" alt="Logo" />
   </header>
 
   <form id="agendamento-form">
@@ -178,11 +162,9 @@
   </form>
 
   <script type="module">
-    // Importa módulos do Firebase para iniciar app, acessar Firestore, e operações básicas
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-    // Configurações do Firebase do seu projeto
     const firebaseConfig = {
       apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
       authDomain: "agendamento-c4753.firebaseapp.com",
@@ -193,11 +175,9 @@
       measurementId: "G-72V3RZG3MF"
     };
 
-    // Inicializa o app Firebase e o banco Firestore
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Lista fixa de horários disponíveis para agendamento
     const horarios = [
       "07:10","07:20","07:30","07:40","07:50","08:00",
       "08:10","08:20","08:30","08:40","08:50","09:00",
@@ -208,11 +188,9 @@
     const turmaSelect = document.getElementById("turma");
     const horarioSelect = document.getElementById("horario");
 
-    // Função para carregar horários disponíveis de acordo com a turma selecionada
     async function carregarHorariosDisponiveis(turma) {
-      horarioSelect.innerHTML = ""; // Limpa opções atuais
+      horarioSelect.innerHTML = "";
 
-      // Se nenhuma turma selecionada, mostra todos horários disponíveis
       if (!turma) {
         horarios.forEach(horario => {
           const option = document.createElement("option");
@@ -223,22 +201,20 @@
         return;
       }
 
-      // Consulta Firestore para pegar agendamentos já realizados na turma
       const q = query(collection(db, "agendamentos"), where("turma", "==", turma));
       const querySnapshot = await getDocs(q);
 
       const horariosAgendados = new Set();
       querySnapshot.forEach(doc => {
-        horariosAgendados.add(doc.data().horario); // Adiciona horário já agendado no Set
+        horariosAgendados.add(doc.data().horario);
       });
 
-      // Cria opções no select: horários livres e bloqueados (indisponíveis)
       horarios.forEach(horario => {
         const option = document.createElement("option");
         option.value = horario;
         if (horariosAgendados.has(horario)) {
           option.textContent = `${horario} (Indisponível)`;
-          option.disabled = true; // bloqueia seleção do horário
+          option.disabled = true;
         } else {
           option.textContent = horario;
         }
@@ -246,35 +222,29 @@
       });
     }
 
-    // Atualiza horários disponíveis quando turma for alterada
     turmaSelect.addEventListener("change", () => {
       carregarHorariosDisponiveis(turmaSelect.value);
     });
 
-    // Carrega todos os horários inicialmente
     carregarHorariosDisponiveis("");
 
-    // Evento de submissão do formulário
     document.getElementById("agendamento-form").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      // Obtém valores dos campos
       const nome = document.getElementById("nome").value.trim();
       const aluno = document.getElementById("aluno").value.trim();
       const turma = turmaSelect.value;
       const horario = horarioSelect.value;
 
-      // Validação simples para garantir preenchimento de todos campos
       if (!nome || !aluno || !turma || !horario) {
         alert("Por favor, preencha todos os campos.");
         return;
       }
 
       try {
-        // Salva o agendamento no Firestore
         await addDoc(collection(db, "agendamentos"), { nome, aluno, turma, horario });
         alert("Agendamento realizado com sucesso!");
-        carregarHorariosDisponiveis(turma); // Atualiza horários para refletir novo agendamento
+        carregarHorariosDisponiveis(turma);
         document.getElementById("agendamento-form").reset();
         horarioSelect.innerHTML = "";
       } catch (error) {

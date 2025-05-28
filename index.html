@@ -89,7 +89,7 @@
   <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
@@ -104,8 +104,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Preencher horários
     const horarioSelect = document.getElementById("horario");
+    const turmaSelect = document.getElementById("turma");
+
     const horarios = [
       "07:10","07:20","07:30","07:40","07:50","08:00",
       "08:10","08:20","08:30","08:40","08:50","09:00",
@@ -113,37 +114,79 @@
       "10:10","10:20","10:30","10:40","10:50"
     ];
 
-    async function carregarHorariosDisponiveis() {
-      const agendamentos = await getDocs(collection(db, "agendamentos"));
+    // Função para carregar horários disponíveis da turma selecionada
+    async function carregarHorariosDisponiveis(turma) {
+      horarioSelect.innerHTML = ""; // Limpa opções atuais
+
+      if (!turma) {
+        // Se não selecionou turma, mostrar todos os horários disponíveis
+        horarios.forEach(horario => {
+          const option = document.createElement("option");
+          option.value = horario;
+          option.textContent = horario;
+          horarioSelect.appendChild(option);
+        });
+        return;
+      }
+
+      // Consulta agendamentos filtrando pela turma selecionada
+      const q = query(collection(db, "agendamentos"), where("turma", "==", turma));
+      const querySnapshot = await getDocs(q);
+
       const horariosAgendados = new Set();
-      agendamentos.forEach(doc => {
+      querySnapshot.forEach(doc => {
         horariosAgendados.add(doc.data().horario);
       });
 
+      // Preenche os horários bloqueando os já agendados para essa turma
       horarios.forEach(horario => {
         const option = document.createElement("option");
         option.value = horario;
-        option.textContent = horariosAgendados.has(horario) ? `${horario} (Indisponível)` : horario;
-        option.disabled = horariosAgendados.has(horario);
+        if (horariosAgendados.has(horario)) {
+          option.textContent = `${horario} (Indisponível)`;
+          option.disabled = true;
+        } else {
+          option.textContent = horario;
+        }
         horarioSelect.appendChild(option);
       });
     }
 
-    carregarHorariosDisponiveis();
+    // Atualiza horários toda vez que a turma mudar
+    turmaSelect.addEventListener("change", () => {
+      carregarHorariosDisponiveis(turmaSelect.value);
+    });
 
-    // Enviar agendamento
+    // Inicializa com a turma vazia para mostrar todos os horários inicialmente
+    carregarHorariosDisponiveis("");
+
+    // Evento submit para salvar agendamento
     document.getElementById("agendamento-form").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const nome = document.getElementById("nome").value;
-      const aluno = document.getElementById("aluno").value;
-      const turma = document.getElementById("turma").value;
-      const horario = document.getElementById("horario").value;
+      const nome = document.getElementById("nome").value.trim();
+      const aluno = document.getElementById("aluno").value.trim();
+      const turma = turmaSelect.value;
+      const horario = horarioSelect.value;
 
-      await addDoc(collection(db, "agendamentos"), { nome, aluno, turma, horario });
+      if (!nome || !aluno || !turma || !horario) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+      }
 
-      alert("Agendamento realizado com sucesso!");
-      location.reload();
+      try {
+        // Adiciona documento na coleção "agendamentos"
+        await addDoc(collection(db, "agendamentos"), { nome, aluno, turma, horario });
+        alert("Agendamento realizado com sucesso!");
+        // Atualiza lista de horários disponível para a turma selecionada
+        carregarHorariosDisponiveis(turma);
+        // Limpa o formulário
+        document.getElementById("agendamento-form").reset();
+        horarioSelect.innerHTML = ""; // Limpa para evitar que fique vazio depois de resetar
+      } catch (error) {
+        console.error("Erro ao salvar agendamento:", error);
+        alert("Erro ao realizar agendamento. Tente novamente.");
+      }
     });
   </script>
 </body>

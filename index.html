@@ -5,33 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Agendamento Escolar</title>
   <style>
+    /* Estilos gerais da página */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background-color: #f4f4f4; /* Cor de fundo da página */
+      background-color: #f4f4f4;
     }
 
+    /* Cabeçalho com fundo azul escuro, texto branco, espaçamento e sombra */
     header {
-      background-color: #0D47A1; /* Cor azul escura para o cabeçalho */
-      color: white; /* Cor do texto no cabeçalho */
-      padding: 35px 20px; /* Espaçamento interno */
-      display: flex; /* Layout flexível para alinhar elementos */
-      align-items: center; /* Alinhar verticalmente ao centro */
-      justify-content: space-between; /* Espaço entre os elementos (texto à esquerda, logo à direita) */
+      background-color: #0D47A1; /* Azul mais escuro */
+      color: white;
+      padding: 35px 20px;
+      display: flex; /* Usado para alinhar texto e logo horizontalmente */
+      align-items: center; /* Centraliza verticalmente os itens do header */
+      justify-content: space-between; /* Espaça o texto e a logo nos extremos */
       position: relative;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombra sutil */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
+    /* Container interno do header que agrupa texto e imagem */
     .header-left {
       display: flex;
       align-items: center;
-      gap: 15px; /* Espaço entre imagem e texto */
+      gap: 15px; /* Espaço entre texto e logo */
     }
 
+    /* Estilo da imagem da logo */
     .header-left img {
-      height: 55px; /* Altura da logo */
+      height: 55px;
+      /* A imagem fica no lado direito porque invertemos a ordem no HTML */
     }
 
+    /* Estilo do texto do cabeçalho */
     .header-text h1 {
       font-size: 26px;
       margin: 0;
@@ -42,39 +48,45 @@
       margin: 3px 0 0 0;
     }
 
+    /* Estilos do formulário */
     form {
-      background-color: #fff; /* Fundo branco do formulário */
-      padding: 40px; /* Espaço interno */
-      border-radius: 10px; /* Bordas arredondadas */
-      max-width: 700px; /* Largura máxima */
-      margin: 60px auto 40px auto; /* Centralizado na página com margem acima e abaixo */
-      box-shadow: 0 0 12px rgba(0,0,0,0.1); /* Sombra */
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      max-width: 700px;
+      margin: 60px auto 40px auto;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
       font-size: 18px;
     }
 
+    /* Título do formulário */
     h2 {
       text-align: center;
       margin-bottom: 25px;
-      font-size: 20px; /* Tamanho da frase "Preencha abaixo para marcar seu horário" */
+      font-size: 20px;
     }
 
+    /* Linha com inputs lado a lado */
     .input-row {
       display: flex;
-      gap: 10px; /* Espaço entre os campos */
-      flex-wrap: wrap; /* Quebra de linha em telas pequenas */
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
+    /* Cada div dentro da linha ocupa cerca de metade */
     .input-row div {
-      flex: 1 1 48%; /* Ocupa até 48% da linha */
-      min-width: 200px; /* Largura mínima */
+      flex: 1 1 48%;
+      min-width: 200px;
     }
 
+    /* Estilo das labels */
     label {
       display: block;
       font-weight: bold;
       margin-bottom: 4px;
     }
 
+    /* Estilo dos campos input e select */
     input, select {
       width: 100%;
       padding: 12px;
@@ -84,15 +96,17 @@
       font-size: 16px;
     }
 
+    /* Campo de horário com borda mais espessa e cinza */
     #horario {
-      border: 2px solid #999; /* Campo de horário com borda mais espessa */
+      border: 2px solid #999;
     }
 
+    /* Botão estilizado */
     button {
       width: 200px;
-      margin: 25px auto 0 auto; /* Centralizado */
+      margin: 25px auto 0 auto;
       display: block;
-      background-color: #0D47A1; /* Azul escuro */
+      background-color: #0D47A1;
       color: white;
       border: none;
       font-size: 18px;
@@ -101,42 +115,39 @@
       border-radius: 5px;
     }
 
+    /* Efeito hover do botão */
     button:hover {
-      background-color: #08306b; /* Cor quando passa o mouse */
+      background-color: #08306b;
     }
   </style>
 </head>
 <body>
 
-  <!-- Cabeçalho com nome da escola e logo -->
   <header>
     <div class="header-left">
-      <img src="https://raw.githubusercontent.com/centro-america/agendamento/refs/heads/main/logo-colegio.png" alt="Logo">
+      <!-- Texto do cabeçalho -->
       <div class="header-text">
         <h1>Colégio Adventista Centro América</h1>
         <p>Reunião de Pais - 28/05/2025</p>
       </div>
+      <!-- Logo à direita -->
+      <img src="https://raw.githubusercontent.com/centro-america/agendamento/refs/heads/main/logo-colegio.png" alt="Logo">
     </div>
   </header>
 
-  <!-- Formulário principal -->
   <form id="agendamento-form">
     <h2>Preencha abaixo para marcar seu horário</h2>
     
-    <!-- Campo do nome do responsável -->
     <label for="nome">Nome do responsável</label>
     <input type="text" id="nome" name="nome" required placeholder="Digite aqui o nome do responsável">
 
-    <!-- Campo do nome do aluno -->
     <label for="aluno">Nome do aluno</label>
     <input type="text" id="aluno" name="aluno" required placeholder="Digite aqui o nome do aluno">
 
-    <!-- Linha com dois campos lado a lado: turma e horário -->
     <div class="input-row">
       <div>
         <label for="turma">Turma</label>
         <select id="turma" name="turma" required>
-          <!-- Opções de turmas disponíveis -->
           <option value="">Selecione...</option>
           <option>Maternal MA - Marilene Soares da Silva Rosa</option>
           <option>Maternal TA - Tatiane Maria Souza da Costa</option>
@@ -158,38 +169,35 @@
         </select>
       </div>
       <div>
-        <!-- Campo de seleção de horário -->
         <label for="horario">Horário</label>
         <select id="horario" name="horario" required></select>
       </div>
     </div>
 
-    <!-- Botão de envio do formulário -->
     <button type="submit">Agendar</button>
   </form>
 
-  <!-- Script para lidar com o Firebase e lógica de agendamento -->
   <script type="module">
-    // Importação das bibliotecas do Firebase
+    // Importa módulos do Firebase para iniciar app, acessar Firestore, e operações básicas
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-    // Configurações do Firebase
+    // Configurações do Firebase do seu projeto
     const firebaseConfig = {
       apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
       authDomain: "agendamento-c4753.firebaseapp.com",
       projectId: "agendamento-c4753",
       storageBucket: "agendamento-c4753.firebasestorage.app",
       messagingSenderId: "953838698372",
-      appId: "1:953838698372:web:f07ca99f1245c97c1ce7d1",
+      appId: "1:953838698372:web:f07ca99c97c1ce7d1",
       measurementId: "G-72V3RZG3MF"
     };
 
-    // Inicialização do app e banco de dados
+    // Inicializa o app Firebase e o banco Firestore
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Lista de horários disponíveis
+    // Lista fixa de horários disponíveis para agendamento
     const horarios = [
       "07:10","07:20","07:30","07:40","07:50","08:00",
       "08:10","08:20","08:30","08:40","08:50","09:00",
@@ -200,12 +208,12 @@
     const turmaSelect = document.getElementById("turma");
     const horarioSelect = document.getElementById("horario");
 
-    // Função que carrega os horários disponíveis de acordo com a turma
+    // Função para carregar horários disponíveis de acordo com a turma selecionada
     async function carregarHorariosDisponiveis(turma) {
-      horarioSelect.innerHTML = ""; // Limpa o campo antes de carregar os dados
+      horarioSelect.innerHTML = ""; // Limpa opções atuais
 
+      // Se nenhuma turma selecionada, mostra todos horários disponíveis
       if (!turma) {
-        // Se nenhuma turma estiver selecionada, mostra todos os horários disponíveis
         horarios.forEach(horario => {
           const option = document.createElement("option");
           option.value = horario;
@@ -215,23 +223,22 @@
         return;
       }
 
-      // Consulta os agendamentos já feitos para a turma selecionada
+      // Consulta Firestore para pegar agendamentos já realizados na turma
       const q = query(collection(db, "agendamentos"), where("turma", "==", turma));
       const querySnapshot = await getDocs(q);
 
-      // Armazena os horários já ocupados
       const horariosAgendados = new Set();
       querySnapshot.forEach(doc => {
-        horariosAgendados.add(doc.data().horario);
+        horariosAgendados.add(doc.data().horario); // Adiciona horário já agendado no Set
       });
 
-      // Adiciona os horários restantes (disponíveis)
+      // Cria opções no select: horários livres e bloqueados (indisponíveis)
       horarios.forEach(horario => {
         const option = document.createElement("option");
         option.value = horario;
         if (horariosAgendados.has(horario)) {
           option.textContent = `${horario} (Indisponível)`;
-          option.disabled = true; // Desativa horário já ocupado
+          option.disabled = true; // bloqueia seleção do horário
         } else {
           option.textContent = horario;
         }
@@ -239,35 +246,37 @@
       });
     }
 
-    // Atualiza horários ao mudar a turma
+    // Atualiza horários disponíveis quando turma for alterada
     turmaSelect.addEventListener("change", () => {
       carregarHorariosDisponiveis(turmaSelect.value);
     });
 
-    // Carrega horários iniciais (sem filtro)
+    // Carrega todos os horários inicialmente
     carregarHorariosDisponiveis("");
 
-    // Evento de envio do formulário
+    // Evento de submissão do formulário
     document.getElementById("agendamento-form").addEventListener("submit", async (e) => {
-      e.preventDefault(); // Impede o envio padrão do formulário
+      e.preventDefault();
 
+      // Obtém valores dos campos
       const nome = document.getElementById("nome").value.trim();
       const aluno = document.getElementById("aluno").value.trim();
       const turma = turmaSelect.value;
       const horario = horarioSelect.value;
 
+      // Validação simples para garantir preenchimento de todos campos
       if (!nome || !aluno || !turma || !horario) {
         alert("Por favor, preencha todos os campos.");
         return;
       }
 
       try {
-        // Salva os dados no Firestore
+        // Salva o agendamento no Firestore
         await addDoc(collection(db, "agendamentos"), { nome, aluno, turma, horario });
         alert("Agendamento realizado com sucesso!");
-        carregarHorariosDisponiveis(turma); // Atualiza lista de horários
-        document.getElementById("agendamento-form").reset(); // Limpa o formulário
-        horarioSelect.innerHTML = ""; // Limpa o campo de horários
+        carregarHorariosDisponiveis(turma); // Atualiza horários para refletir novo agendamento
+        document.getElementById("agendamento-form").reset();
+        horarioSelect.innerHTML = "";
       } catch (error) {
         console.error("Erro ao salvar agendamento:", error);
         alert("Erro ao realizar agendamento. Tente novamente.");

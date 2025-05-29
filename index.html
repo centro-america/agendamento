@@ -1,101 +1,255 @@
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
-    authDomain: "agendamento-c4753.firebaseapp.com",
-    projectId: "agendamento-c4753",
-    storageBucket: "agendamento-c4753.firebasestorage.app",
-    messagingSenderId: "953838698372",
-    appId: "1:953838698372:web:f07ca99c97c1ce7d1",
-    measurementId: "G-72V3RZG3MF"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const horariosManha = [
-    "07:10","07:20","07:30","07:40","07:50","08:00",
-    "08:10","08:20","08:30","08:40","08:50","09:00",
-    "09:10","09:20","09:30","09:40","09:50","10:00",
-    "10:10","10:20","10:30","10:40","10:50"
-  ];
-
-  const horariosTarde = [
-    "13:10","13:20","13:30","13:40","13:50","14:00",
-    "14:10","14:20","14:30","14:40","14:50","15:00",
-    "15:10","15:20","15:30","15:40","15:50","16:00",
-    "16:10","16:20","16:30","16:40","16:50"
-  ];
-
-  const turmaSelect = document.getElementById("turma");
-  const horarioSelect = document.getElementById("horario");
-
-  function detectarTurno(turma) {
-    const match = turma.match(/(TA|TB|TC)/);
-    if (match) return "tarde";
-
-    const matchManha = turma.match(/(MA|MB|MC)/);
-    if (matchManha) return "manha";
-
-    return "manha"; // valor padrão
-  }
-
-  async function carregarHorariosDisponiveis(turma) {
-    horarioSelect.innerHTML = "";
-
-    const turno = detectarTurno(turma);
-    const horarios = turno === "tarde" ? horariosTarde : horariosManha;
-
-    const q = query(collection(db, "agendamentos"), where("turma", "==", turma));
-    const querySnapshot = await getDocs(q);
-
-    const horariosAgendados = new Set();
-    querySnapshot.forEach(doc => {
-      horariosAgendados.add(doc.data().horario);
-    });
-
-    horarios.forEach(horario => {
-      const option = document.createElement("option");
-      option.value = horario;
-      if (horariosAgendados.has(horario)) {
-        option.textContent = `${horario} (Indisponível)`;
-        option.disabled = true;
-      } else {
-        option.textContent = horario;
-      }
-      horarioSelect.appendChild(option);
-    });
-  }
-
-  turmaSelect.addEventListener("change", () => {
-    const turma = turmaSelect.value;
-    if (turma) carregarHorariosDisponiveis(turma);
-  });
-
-  document.getElementById("agendamento-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const nome = document.getElementById("nome").value.trim();
-    const aluno = document.getElementById("aluno").value.trim();
-    const turma = turmaSelect.value;
-    const horario = horarioSelect.value;
-
-    if (!nome || !aluno || !turma || !horario) {
-      alert("Por favor, preencha todos os campos.");
-      return;
+<!DOCTYPE html> 
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agendamento Escolar</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f4f4f4;
     }
 
-    try {
-      await addDoc(collection(db, "agendamentos"), { nome, aluno, turma, horario });
-      alert("Agendamento realizado com sucesso!");
-      carregarHorariosDisponiveis(turma);
-      document.getElementById("agendamento-form").reset();
+    header {
+      background-color: #0D47A1;
+      color: white;
+      padding: 35px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .header-text {
+      max-width: 80%;
+      margin-right: 30px;
+    }
+
+    .header-text h1 {
+      font-size: 26px;
+      margin: 0;
+    }
+
+    .header-text p {
+      font-size: 16px;
+      margin: 3px 0 0 0;
+    }
+
+    header img {
+      height: 55px;
+      object-fit: contain;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      max-width: 700px;
+      margin: 60px auto 40px auto;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+      font-size: 18px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 20px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .input-row div {
+      flex: 1 1 48%;
+      min-width: 200px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    #horario {
+      border: 2px solid #999;
+    }
+
+    button {
+      width: 200px;
+      margin: 25px auto 0 auto;
+      display: block;
+      background-color: #0D47A1;
+      color: white;
+      border: none;
+      font-size: 18px;
+      padding: 12px 0;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #08306b;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-text">
+      <h1>Colégio Adventista Centro América</h1>
+      <p>Reunião de Pais - 28/05/2025</p>
+    </div>
+    <img src="https://raw.githubusercontent.com/centro-america/agendamento/refs/heads/main/logo-colegio.png" alt="Logo" />
+  </header>
+
+  <form id="agendamento-form">
+    <h2>Preencha abaixo para marcar seu horário:</h2>
+    
+    <label for="nome">Nome do responsável:</label>
+    <input type="text" id="nome" name="nome" required placeholder="Digite aqui o nome do responsável">
+
+    <label for="aluno">Nome do aluno:</label>
+    <input type="text" id="aluno" name="aluno" required placeholder="Digite aqui o nome do aluno">
+
+    <div class="input-row">
+      <div>
+        <label for="turma">Turma:</label>
+        <select id="turma" name="turma" required>
+          <option value="">Selecione...</option>
+          <option>Maternal MA - Marilene Soares da Silva Rosa</option>
+          <option>Maternal TA - Marinalva Santana da Silva Araújo</option>
+          <option>Pré 1 MA - Ana Paula da Silva Biscoli de Jesus</option>
+          <option>Pré 1 TA - Ana Paula da Silva Biscoli de Jesus</option>
+          <option>Pré 1 TB - Rosane Ambrósio de Oliveira dos Santos</option>
+          <option>Pré 2 MA - Maria Letícia Sousa de Araújo</option>
+          <option>Pré 2 TA - Maria Letícia Sousa de Araújo</option>
+          <option>Pré 2 TB - Valéria Pereira Belisario de Paula</option>
+          <option>Pré 3 MA - Raissa Manoele Costa Pereira</option>
+          <option>Pré 3 MB - Valéria Pereira Belisario de Paula</option>
+          <option>Pré 3 TA - Heulla Fhernanda Menezes</option>
+          <option>Pré 3 TB - Raissa Manoele Costa Pereira</option>
+          <option>1º ano MA - Eliane Silva dos Santos Cruz</option>
+          <option>1º ano MB - Leticia da Silva Pinheiro</option>
+          <option>1º ano TA - Eliane Silva dos Santos Cruz</option>
+          <option>1º ano TB - Leticia da Silva Pinheiro</option>
+          <option>1º ano TC - Nadir de Barros</option>
+        </select>
+      </div>
+      <div>
+        <label for="horario">Horário:</label>
+        <select id="horario" name="horario" required></select>
+      </div>
+    </div>
+
+    <button type="submit">Agendar</button>
+  </form>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.10.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
+      authDomain: "agendamento-c4753.firebaseapp.com",
+      projectId: "agendamento-c4753",
+      storageBucket: "agendamento-c4753.appspot.com",
+      messagingSenderId: "953838698372",
+      appId: "1:953838698372:web:f07ca99f1245c97c1ce7d1",
+      measurementId: "G-72V3RZG3MF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const horariosManha = [
+      "07:10","07:20","07:30","07:40","07:50","08:00",
+      "08:10","08:20","08:30","08:40","08:50","09:00",
+      "09:10","09:20","09:30","09:40","09:50","10:00",
+      "10:10","10:20","10:30","10:40","10:50"
+    ];
+
+    const horariosTarde = [
+      "13:10","13:20","13:30","13:40","13:50","14:00", 
+      "14:10","14:20","14:30","14:40","14:50","15:00", 
+      "15:10","15:20","15:30","15:40","15:50","16:00", 
+      "16:10","16:20","16:30","16:40","16:50"
+    ];
+
+    const turmaSelect = document.getElementById("turma");
+    const horarioSelect = document.getElementById("horario");
+
+    function determinarTurno(turma) {
+      const codigo = turma.split(" ")[1];
+      return (/T[ABC]/.test(codigo)) ? "tarde" : "manha";
+    }
+
+    async function carregarHorariosDisponiveis(turma) {
       horarioSelect.innerHTML = "";
-    } catch (error) {
-      console.error("Erro ao salvar agendamento:", error);
-      alert("Erro ao realizar agendamento. Tente novamente.");
+
+      if (!turma) return;
+
+      const turno = determinarTurno(turma);
+      const horariosBase = turno === "tarde" ? horariosTarde : horariosManha;
+
+      const q = query(collection(db, "agendamentos"), where("turma", "==", turma));
+      const querySnapshot = await getDocs(q);
+      const horariosAgendados = new Set();
+      querySnapshot.forEach(doc => horariosAgendados.add(doc.data().horario));
+
+      horariosBase.forEach(horario => {
+        const option = document.createElement("option");
+        option.value = horario;
+        if (horariosAgendados.has(horario)) {
+          option.textContent = `${horario} (Indisponível)`;
+          option.disabled = true;
+        } else {
+          option.textContent = horario;
+        }
+        horarioSelect.appendChild(option);
+      });
     }
-  });
-</script>
+
+    turmaSelect.addEventListener("change", () => {
+      carregarHorariosDisponiveis(turmaSelect.value);
+    });
+
+    document.getElementById("agendamento-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const nome = document.getElementById("nome").value.trim();
+      const aluno = document.getElementById("aluno").value.trim();
+      const turma = turmaSelect.value;
+      const horario = horarioSelect.value;
+
+      if (!nome || !aluno || !turma || !horario) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "agendamentos"), { nome, aluno, turma, horario });
+        alert("Agendamento realizado com sucesso!");
+        carregarHorariosDisponiveis(turma);
+        document.getElementById("agendamento-form").reset();
+        horarioSelect.innerHTML = "";
+      } catch (error) {
+        console.error("Erro ao salvar agendamento:", error);
+        alert("Erro ao realizar agendamento. Tente novamente.");
+      }
+    });
+  </script>
+</body>
+</html>

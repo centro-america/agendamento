@@ -29,11 +29,13 @@
     .header-text h1 {
       font-size: 26px;
       margin: 0;
+      text-align: center;
     }
 
     .header-text p {
       font-size: 16px;
       margin: 3px 0 0 0;
+      text-align: center;
     }
 
     header img {
@@ -158,14 +160,14 @@
   </form>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.10.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCK95vSv4jK0L-eoKC2I6Gev5BjQSL3N7c",
       authDomain: "agendamento-c4753.firebaseapp.com",
       projectId: "agendamento-c4753",
-      storageBucket: "agendamento-c4753.appspot.com",
+      storageBucket: "agendamento-c4753.firebasestorage.app",
       messagingSenderId: "953838698372",
       appId: "1:953838698372:web:f07ca99f1245c97c1ce7d1",
       measurementId: "G-72V3RZG3MF"
@@ -191,9 +193,11 @@
     const turmaSelect = document.getElementById("turma");
     const horarioSelect = document.getElementById("horario");
 
-    function determinarTurno(turma) {
-      const codigo = turma.split(" ")[1];
-      return (/T[ABC]/.test(codigo)) ? "tarde" : "manha";
+    function getTurno(turma) {
+      const match = turma.match(/(\bMA|\bMB|\bMC|\bTA|\bTB|\bTC)\b/);
+      if (!match) return 'manha';
+      const codigo = match[0];
+      return codigo.startsWith('T') ? 'tarde' : 'manha';
     }
 
     async function carregarHorariosDisponiveis(turma) {
@@ -201,15 +205,18 @@
 
       if (!turma) return;
 
-      const turno = determinarTurno(turma);
-      const horariosBase = turno === "tarde" ? horariosTarde : horariosManha;
+      const turno = getTurno(turma);
+      const horarios = turno === 'tarde' ? horariosTarde : horariosManha;
 
       const q = query(collection(db, "agendamentos"), where("turma", "==", turma));
       const querySnapshot = await getDocs(q);
-      const horariosAgendados = new Set();
-      querySnapshot.forEach(doc => horariosAgendados.add(doc.data().horario));
 
-      horariosBase.forEach(horario => {
+      const horariosAgendados = new Set();
+      querySnapshot.forEach(doc => {
+        horariosAgendados.add(doc.data().horario);
+      });
+
+      horarios.forEach(horario => {
         const option = document.createElement("option");
         option.value = horario;
         if (horariosAgendados.has(horario)) {
@@ -251,5 +258,6 @@
       }
     });
   </script>
+
 </body>
 </html>

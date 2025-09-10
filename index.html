@@ -131,7 +131,7 @@
         <label for="turma">Lavanderia:</label>
         <select id="turma" name="turma" required>
           <option value="">Selecione...</option>
-          <option>Período MA</option>
+          <option>10/08/2025 MDA</option>
         </select>
       </div>
       <div>
@@ -178,7 +178,7 @@
     const horarioSelect = document.getElementById("horario");
 
     function getTurno(turma) {
-      const match = turma.match(/(\bMA|\bMB|\bMC|\bTA|\bTB|\bTC)\b/);
+      const match = turma.match(/(\bMA|\bMB|\bMC|\bTA|\bTB|\bTC|\MDA)\b/);
       if (!match) return 'manha';
       const codigo = match[0];
       return codigo.startsWith('T') ? 'tarde' : 'manha';

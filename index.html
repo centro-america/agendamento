@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Batalha Final</title>
+  <title>Agendamento Escolar</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -111,8 +111,8 @@
 
   <header>
     <div class="header-text">
-      <h1>Aventuri/Campori Batalha Final</h1>
-      <p>Agendamento Maquina de Lavar</p>
+      <h1>Colégio Adventista Centro América</h1>
+      <p>Conselho Participativo - 14/10/2025</p>
     </div>
     <img src="https://raw.githubusercontent.com/centro-america/agendamento/refs/heads/main/logo-colegio.png" alt="Logo" />
   </header>
@@ -123,7 +123,7 @@
     <label for="nome">Nome do responsável:</label>
     <input type="text" id="nome" name="nome" required placeholder="Digite aqui o nome do responsável">
 
-    <label for="aluno">Setor no Evento</label>
+    <label for="aluno">Nome do Aluno</label>
     <input type="text" id="aluno" name="aluno" required placeholder="Digite aqui o nome do aluno">
 
     <div class="input-row">
@@ -131,12 +131,24 @@
         <label for="turma">Lavanderia:</label>
         <select id="turma" name="turma" required>
           <option value="">Selecione...</option>
-          <option>16/08/2025 MDA</option>
-          <option>17/08/2025 MDA</option>
-          <option>18/08/2025 MDA</option>
-          <option>19/08/2025 MDA</option>
-          <option>20/08/2025 MDA</option>
-          <option>21/08/2025 MDA</option>
+          <option>Maternal MA - Marilene Soares</option>
+          <option>Maternal TA - Marinalva Santana</option>
+          <option>Pré 1 MA - Ana Paula da Silva</option>
+          <option>Pré 1 TA - Ana Paula da Silva</option>
+          <option>Pré 1 TB - Rosane Ambrósio de Oliveira</option>
+          <option>Pré 2 MA - Maria Letícia Sousa</option>
+          <option>Pré 2 TA - Maria Letícia Sousa</option>
+          <option>Pré 2 TB - Valéria Pereira Belisario</option>
+          <option>Pré 3 MA - Raissa Manoele Costa Pereira</option>
+          <option>Pré 3 MB - Valéria Pereira Belisario</option>
+          <option>Pré 3 TA - Heulla Fhernanda Menezes</option>
+          <option>Pré 3 TB - Raissa Manoele Costa Pereira</option>
+          <option>1º ano MA - Pholianna Ranieli Silva</option>
+          <option>1º ano MB - Leysa Luana Alves</option>
+          <option>1º ano TA - Luana Jessy Campos</option>
+          <option>1º ano TB - Leticia da Silva Pinheiro</option>
+          <option>1º ano TC - Nadir de Barros</option>
+
         </select>
       </div>
       <div>
@@ -166,8 +178,10 @@
     const db = getFirestore(app);
 
     const horariosManha = [
-      "00:00","02:00","04:00","06:00","08:00","10:00",
-      "12:00","14:00","16:00","18:00","20:00","22:00"
+      "07:10","07:20","07:30","07:40","07:50","08:00",
+      "08:10","08:20","08:30","08:40","08:50","09:00",
+      "09:10","09:20","09:30","09:40","09:50","10:00",
+      "10:10","10:20","10:30","10:40","10:50"
     ];
 
     const horariosTarde = [
